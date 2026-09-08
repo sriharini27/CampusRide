@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Assign Stop - CampusRide</title>
+
+    <style>
+        body {
+            font-family: Arial;
+            background: #f4f6f8;
+            margin: 0;
+        }
+
+        .header {
+            background: #173b57;
+            color: white;
+            padding: 20px;
+        }
+
+        .container {
+            width: 500px;
+            margin: 40px auto;
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 2px 8px #ccc;
+        }
+
+        label {
+            display: block;
+            margin-top: 15px;
+            margin-bottom: 8px;
+            font-weight: bold;
+        }
+
+        select,
+        input {
+            width: 100%;
+            padding: 12px;
+            box-sizing: border-box;
+        }
+
+        button {
+            margin-top: 25px;
+            background: #173b57;
+            color: white;
+            padding: 12px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        a {
+            text-decoration: none;
+            color: #173b57;
+        }
+    </style>
+</head>
+
+<body>
+
+<div class="header">
+    <h1>CampusRide</h1>
+    <p>Route - Stop Management</p>
+</div>
+
+<div class="container">
+
+    <h2>Assign Stop to Route</h2>
+
+    <form method="POST">
+
+        {% csrf_token %}
+
+        <label>Select Route</label>
+
+        <select name="route" required>
+
+            <option value="">
+                -- Select Route --
+            </option>
+
+            {% for route in routes %}
+
+                <option value="{{ route.id }}">
+                    {{ route.route_number }} -
+                    {{ route.route_name }}
+                </option>
+
+            {% endfor %}
+
+        </select>
+
+
+        <label>Select Stop</label>
+
+        <select name="stop" required>
+
+            <option value="">
+                -- Select Stop --
+            </option>
+
+            {% for stop in stops %}
+
+                <option value="{{ stop.id }}">
+                    {{ stop.stop_name }} -
+                    {{ stop.location }}
+                </option>
+
+            {% endfor %}
+
+        </select>
+
+
+        <label>Stop Order</label>
+
+        <input
+            type="number"
+            name="stop_order"
+            min="1"
+            placeholder="Example: 1"
+            required
+        >
+
+
+        <button type="submit">
+            Assign Stop
+        </button>
+
+    </form>
+
+    <br>
+
+    <a href="{% url 'route_stop_list' %}">
+        ← Back to Route Stops
+    </a>
+
+</div>
+
+</body>
+</html>

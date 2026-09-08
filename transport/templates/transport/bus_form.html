@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Bus Form - CampusRide</title>
+
+    <style>
+        body {
+            font-family: Arial;
+            background: #f4f6f8;
+            margin: 0;
+        }
+
+        .header {
+            background: #173b57;
+            color: white;
+            padding: 20px;
+        }
+
+        .container {
+            width: 500px;
+            margin: 40px auto;
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 2px 8px #ccc;
+        }
+
+        input, select {
+            width: 100%;
+            padding: 12px;
+            margin: 8px 0 20px;
+            box-sizing: border-box;
+        }
+
+        button {
+            background: #173b57;
+            color: white;
+            padding: 12px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        a {
+            text-decoration: none;
+            color: #173b57;
+        }
+    </style>
+</head>
+
+<body>
+
+<div class="header">
+    <h1>CampusRide</h1>
+    <p>Bus Management</p>
+</div>
+
+<div class="container">
+
+    {% if bus %}
+        <h2>Edit Bus</h2>
+    {% else %}
+        <h2>Add Bus</h2>
+    {% endif %}
+
+    <form method="POST">
+
+        {% csrf_token %}
+
+        <label>Bus Number</label>
+        <input
+            type="text"
+            name="bus_number"
+            value="{{ bus.bus_number|default:'' }}"
+            placeholder="Example: BUS-01"
+            required
+        >
+
+        <label>Registration Number</label>
+        <input
+            type="text"
+            name="registration_number"
+            value="{{ bus.registration_number|default:'' }}"
+            placeholder="Example: TN-69-AB-1234"
+            required
+        >
+
+        <label>Capacity</label>
+        <input
+            type="number"
+            name="capacity"
+            value="{{ bus.capacity|default:'' }}"
+            placeholder="Example: 50"
+            min="1"
+            required
+        >
+
+        <label>Assign Route</label>
+
+        <select name="route" required>
+
+            <option value="">-- Select Route --</option>
+
+            {% for route in routes %}
+
+                <option value="{{ route.id }}"
+                    {% if bus.route_id == route.id %}
+                        selected
+                    {% endif %}
+                >
+                    {{ route.route_number }} - {{ route.route_name }}
+                </option>
+
+            {% endfor %}
+
+        </select>
+
+        <button type="submit">
+            {% if bus %}
+                Update Bus
+            {% else %}
+                Add Bus
+            {% endif %}
+        </button>
+
+    </form>
+
+    <br>
+
+    <a href="{% url 'bus_list' %}">
+        ← Back to Bus List
+    </a>
+
+</div>
+
+</body>
+</html>

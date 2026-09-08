@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Bus Management - CampusRide</title>
+
+    <style>
+        body {
+            font-family: Arial;
+            margin: 0;
+            background: #f4f6f8;
+        }
+
+        .header {
+            background: #173b57;
+            color: white;
+            padding: 20px;
+        }
+
+        .container {
+            padding: 30px;
+        }
+
+        table {
+            width: 100%;
+            background: white;
+            border-collapse: collapse;
+            box-shadow: 0 2px 8px #ccc;
+        }
+
+        th, td {
+            padding: 15px;
+            border-bottom: 1px solid #ddd;
+            text-align: left;
+        }
+
+        th {
+            background: #173b57;
+            color: white;
+        }
+
+        a {
+            text-decoration: none;
+            padding: 8px 12px;
+            border-radius: 5px;
+            color: white;
+            background: #173b57;
+        }
+
+        .add {
+            display: inline-block;
+            margin-bottom: 20px;
+        }
+
+        .delete {
+            background: #c0392b;
+        }
+    </style>
+</head>
+
+<body>
+
+<div class="header">
+    <h1>CampusRide</h1>
+    <p>Bus Management</p>
+</div>
+
+<div class="container">
+
+    <h2>Bus Management</h2>
+
+    <a href="{% url 'bus_create' %}" class="add">
+        + Add Bus
+    </a>
+
+    <table>
+
+        <tr>
+            <th>Bus Number</th>
+            <th>Registration Number</th>
+            <th>Capacity</th>
+            <th>Assigned Route</th>
+            <th>Actions</th>
+        </tr>
+
+        {% for bus in buses %}
+
+        <tr>
+            <td>{{ bus.bus_number }}</td>
+
+            <td>{{ bus.registration_number }}</td>
+
+            <td>{{ bus.capacity }}</td>
+
+            <td>
+                {% if bus.route %}
+                    {{ bus.route.route_number }} - {{ bus.route.route_name }}
+                {% else %}
+                    Not Assigned
+                {% endif %}
+            </td>
+
+            <td>
+                <a href="{% url 'bus_update' bus.id %}">
+                    Edit
+                </a>
+
+                <a href="{% url 'bus_delete' bus.id %}"
+                   class="delete">
+                    Delete
+                </a>
+            </td>
+        </tr>
+
+        {% empty %}
+
+        <tr>
+            <td colspan="5">
+                No buses available.
+            </td>
+        </tr>
+
+        {% endfor %}
+
+    </table>
+
+    <br>
+
+    <a href="{% url 'dashboard' %}">
+        Back to Dashboard
+    </a>
+
+</div>
+
+</body>
+</html>

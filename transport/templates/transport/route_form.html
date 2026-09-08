@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Route Form - CampusRide</title>
+
+    <style>
+        body {
+            font-family: Arial;
+            background: #f4f6f8;
+            margin: 0;
+        }
+
+        .header {
+            background: #173b57;
+            color: white;
+            padding: 20px;
+        }
+
+        .container {
+            width: 500px;
+            margin: 40px auto;
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 2px 8px #ccc;
+        }
+
+        label {
+            display: block;
+            margin-top: 15px;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+
+        input {
+            width: 100%;
+            padding: 10px;
+            box-sizing: border-box;
+        }
+
+        button {
+            margin-top: 25px;
+            background: #173b57;
+            color: white;
+            border: none;
+            padding: 12px 20px;
+            cursor: pointer;
+            border-radius: 5px;
+        }
+
+        .back {
+            display: inline-block;
+            margin-top: 20px;
+            text-decoration: none;
+        }
+    </style>
+</head>
+
+<body>
+
+<div class="header">
+    <h1>CampusRide</h1>
+    <p>Route Management</p>
+</div>
+
+<div class="container">
+
+    {% if route %}
+        <h2>Edit Route</h2>
+    {% else %}
+        <h2>Add New Route</h2>
+    {% endif %}
+
+    <form method="POST">
+
+        {% csrf_token %}
+
+        <label>Route Number</label>
+        <input
+            type="text"
+            name="route_number"
+            value="{{ route.route_number|default:'' }}"
+            placeholder="Example: R01"
+            required
+        >
+
+        <label>Route Name</label>
+        <input
+            type="text"
+            name="route_name"
+            value="{{ route.route_name|default:'' }}"
+            placeholder="Example: Kovilpatti - NEC"
+            required
+        >
+
+        <label>Starting Point</label>
+        <input
+            type="text"
+            name="start_point"
+            value="{{ route.start_point|default:'' }}"
+            placeholder="Example: Kovilpatti"
+            required
+        >
+
+        <label>Ending Point</label>
+        <input
+            type="text"
+            name="end_point"
+            value="{{ route.end_point|default:'' }}"
+            placeholder="Example: NEC"
+            required
+        >
+
+        <button type="submit">
+            {% if route %}
+                Update Route
+            {% else %}
+                Add Route
+            {% endif %}
+        </button>
+
+    </form>
+
+    <a class="back" href="{% url 'route_list' %}">
+        ← Back to Routes
+    </a>
+
+</div>
+
+</body>
+</html>

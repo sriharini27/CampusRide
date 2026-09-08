@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>CampusRide Dashboard</title>
+
+    <style>
+        body {
+            font-family: Arial;
+            margin: 0;
+            background: #f4f6f8;
+        }
+
+        .header {
+            background: #173b57;
+            color: white;
+            padding: 20px;
+        }
+
+        .container {
+            padding: 30px;
+        }
+
+        .cards {
+            display: flex;
+            gap: 20px;
+        }
+
+        .card {
+            background: white;
+            padding: 25px;
+            width: 200px;
+            border-radius: 10px;
+            box-shadow: 0 2px 8px #ccc;
+        }
+
+        .card h2 {
+            margin: 0;
+        }
+
+        a {
+            text-decoration: none;
+            color: white;
+            background: #173b57;
+            padding: 10px 15px;
+            border-radius: 5px;
+        }
+    </style>
+</head>
+
+<body>
+
+<div class="header">
+    <h1>CampusRide</h1>
+    <p>College Transport & Bus Pass Management System</p>
+</div>
+
+<div class="container">
+
+    <h2>Transport Dashboard</h2>
+
+    <div class="cards">
+
+        <div class="card">
+            <h2>{{ routes }}</h2>
+            <p>Total Routes</p>
+
+            <a href="{% url 'route_list' %}">
+                Manage Routes
+            </a>
+        </div>
+
+        <div class="card">
+            <h2>0</h2>
+            <p>Total Buses</p>
+        </div>
+
+        <div class="card">
+            <h2>0</h2>
+            <p>Total Stops</p>
+        </div>
+
+    </div>
+
+</div>
+
+</body>
+</html>
