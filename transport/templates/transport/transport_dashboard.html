@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+
+    <title>Transport Dashboard - CampusRide</title>
+
+    <style>
+
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            background: #f4f6f8;
+        }
+
+        .header {
+            background: #173b57;
+            color: white;
+            padding: 25px 40px;
+        }
+
+        .container {
+            padding: 30px 40px;
+        }
+
+        .cards {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .card {
+            background: white;
+            padding: 25px;
+            border-radius: 10px;
+            box-shadow: 0 2px 8px #ccc;
+        }
+
+        .card h2 {
+            margin: 0;
+            font-size: 32px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            background: white;
+        }
+
+        th {
+            background: #173b57;
+            color: white;
+        }
+
+        th, td {
+            padding: 14px;
+            border-bottom: 1px solid #ddd;
+            text-align: left;
+        }
+
+        .available {
+            color: green;
+            font-weight: bold;
+        }
+
+        .full {
+            color: red;
+            font-weight: bold;
+        }
+
+        .button {
+            display: inline-block;
+            background: #173b57;
+            color: white;
+            padding: 10px 15px;
+            text-decoration: none;
+            border-radius: 5px;
+            margin-bottom: 20px;
+        }
+
+    </style>
+
+</head>
+
+<body>
+
+<div class="header">
+
+    <h1>CampusRide</h1>
+
+    <p>College Transport Management Dashboard</p>
+
+</div>
+
+<div class="container">
+
+    <h2>Transport Dashboard</h2>
+
+    <a class="button" href="{% url 'route_allocation' %}">
+        Manage Route Allocation
+    </a>
+
+    <div class="cards">
+
+        <div class="card">
+            <h2>{{ total_routes }}</h2>
+            <p>Total Routes</p>
+        </div>
+
+        <div class="card">
+            <h2>{{ total_buses }}</h2>
+            <p>Total Buses</p>
+        </div>
+
+        <div class="card">
+            <h2>{{ total_students }}</h2>
+            <p>Total Students</p>
+        </div>
+
+        <div class="card">
+            <h2>{{ allocated_students }}</h2>
+            <p>Allocated Students</p>
+        </div>
+
+    </div>
+
+    <div class="cards">
+
+        <div class="card">
+            <h2>{{ unallocated_students }}</h2>
+            <p>Unallocated Students</p>
+        </div>
+
+        <div class="card">
+            <h2>{{ total_capacity }}</h2>
+            <p>Total Bus Capacity</p>
+        </div>
+
+        <div class="card">
+            <h2>{{ available_seats }}</h2>
+            <p>Available Seats</p>
+        </div>
+
+    </div>
+
+    <h2>Route-wise Passenger Information</h2>
+
+    <table>
+
+        <thead>
+
+            <tr>
+
+                <th>Route</th>
+                <th>Bus</th>
+                <th>Passengers</th>
+                <th>Capacity</th>
+                <th>Available Seats</th>
+
+            </tr>
+
+        </thead>
+
+        <tbody>
+
+        {% for item in route_data %}
+
+            <tr>
+
+                <td>
+                    {{ item.route.route_number }}
+                    -
+                    {{ item.route.route_name }}
+                </td>
+
+                <td>
+
+                    {% if item.bus %}
+                        {{ item.bus.bus_number }}
+                    {% else %}
+                        No Bus
+                    {% endif %}
+
+                </td>
+
+                <td>
+                    {{ item.passengers }}
+                </td>
+
+                <td>
+                    {{ item.capacity }}
+                </td>
+
+                <td>
+
+                    {% if item.available > 0 %}
+
+                        <span class="available">
+                            {{ item.available }}
+                        </span>
+
+                    {% else %}
+
+                        <span class="full">
+                            FULL
+                        </span>
+
+                    {% endif %}
+
+                </td>
+
+            </tr>
+
+        {% empty %}
+
+            <tr>
+                <td colspan="5">
+                    No routes available.
+                </td>
+            </tr>
+
+        {% endfor %}
+
+        </tbody>
+
+    </table>
+
+</div>
+
+</body>
+
+</html>

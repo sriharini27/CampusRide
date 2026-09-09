@@ -329,3 +329,121 @@ def apply_bus_pass(request):
 def student_logout(request):
     logout(request)
     return redirect("student_login")
+
+
+def route_allocation(request):
+    routes = Route.objects.all()
+    students = Student.objects.select_related("user", "route").all()
+
+    search = request.GET.get("search", "").strip()
+    route_id = request.GET.get("route", "")
+
+    # Search students
+    if search:
+        students = students.filter(
+            student_id__icontains=search
+        ) | students.filter(
+            user__first_name__icontains=search
+        ) | students.filter(
+            user__last_name__icontains=search
+        )
+
+    # Filter by route
+    if route_id:
+        students = students.filter(route_id=route_id)
+
+    # Allocate student to route
+    if request.method == "POST":
+        student_id = request.POST.get("student_id")
+        selected_route = request.POST.get("route_id")
+
+        student = get_object_or_404(Student, id=student_id)
+
+        if selected_route:
+            route = get_object_or_404(Route, id=selected_route)
+            student.route = route
+            student.save()
+
+            messages.success(
+                request,
+                f"{student.student_id} allocated to {route.route_number}."
+            )
+        else:
+            student.route = None
+            student.save()
+
+            messages.success(
+                request,
+                f"{student.student_id} route allocation removed."
+            )
+
+        return redirect("route_allocation")
+
+    return render(
+        request,
+        "transport/route_allocation.html",
+        {
+            "students": students,
+            "routes": routes,
+            "search": search,
+            "selected_route": route_id,
+        }
+    )
+
+
+def transport_dashboard(request):
+    routes = Route.objects.all()
+    buses = Bus.objects.all()
+    students = Student.objects.all()
+
+    total_routes = routes.count()
+    total_buses = buses.count()
+    total_students = students.count()
+
+    allocated_students = students.filter(
+        route__isnull=False
+    ).count()
+
+    unallocated_students = students.filter(
+        route__isnull=True
+    ).count()
+
+    total_capacity = sum(bus.capacity for bus in buses)
+
+    available_seats = total_capacity - allocated_students
+
+    route_data = []
+
+    for route in routes:
+        passenger_count = students.filter(route=route).count()
+        bus = buses.filter(route=route).first()
+
+        if bus:
+            capacity = bus.capacity
+            available = max(capacity - passenger_count, 0)
+        else:
+            capacity = 0
+            available = 0
+
+        route_data.append({
+            "route": route,
+            "bus": bus,
+            "passengers": passenger_count,
+            "capacity": capacity,
+            "available": available,
+        })
+
+    return render(
+        request,
+        "transport/transport_dashboard.html",
+        {
+            "total_routes": total_routes,
+            "total_buses": total_buses,
+            "total_students": total_students,
+            "allocated_students": allocated_students,
+            "unallocated_students": unallocated_students,
+            "total_capacity": total_capacity,
+            "available_seats": available_seats,
+            "route_data": route_data,
+        }
+    )

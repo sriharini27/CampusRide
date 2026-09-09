@@ -108,4 +108,17 @@ path(
     views.student_logout,
     name="student_logout"
 ),
+# Module 3 - Route Allocation & Dashboard
+
+path(
+    "route-allocation/",
+    views.route_allocation,
+    name="route_allocation"
+),
+
+path(
+    "transport-dashboard/",
+    views.transport_dashboard,
+    name="transport_dashboard"
+),
 ]
