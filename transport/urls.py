@@ -76,4 +76,36 @@ path(
     views.route_stop_create,
     name="route_stop_create"
 ),
+
+    # Module 2 - Student Registration
+
+    path(
+        "student/register/",
+        views.student_register,
+        name="student_register"
+    ),
+
+    path(
+    "student/login/",
+    views.student_login,
+    name="student_login"
+),
+
+path(
+    "student/dashboard/",
+    views.student_dashboard,
+    name="student_dashboard"
+),
+
+path(
+    "student/bus-pass/apply/",
+    views.apply_bus_pass,
+    name="apply_bus_pass"
+),
+
+path(
+    "student/logout/",
+    views.student_logout,
+    name="student_logout"
+),
 ]

@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Student Login - CampusRide</title>
+
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background-color: #f1f3f6;
+            color: #000;
+        }
+
+        .header {
+            background-color: #193f5c;
+            color: white;
+            padding: 40px 20px 35px 20px;
+        }
+
+        .header h1 {
+            margin: 0;
+            font-size: 32px;
+            font-weight: bold;
+        }
+
+        .header p {
+            margin-top: 20px;
+            margin-bottom: 0;
+            font-size: 16px;
+        }
+
+        .container {
+            padding: 45px 30px;
+        }
+
+        .page-title {
+            font-size: 25px;
+            font-weight: bold;
+            margin-bottom: 25px;
+        }
+
+        .form-card {
+            background-color: white;
+            max-width: 500px;
+            margin: 0 auto;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 3px 10px rgba(0, 0, 0, 0.15);
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            font-weight: bold;
+            margin-bottom: 8px;
+        }
+
+        .form-group input {
+            width: 100%;
+            padding: 11px 12px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            font-size: 15px;
+        }
+
+        .login-btn {
+            width: 100%;
+            background-color: #193f5c;
+            color: white;
+            border: none;
+            padding: 12px;
+            border-radius: 5px;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        .login-btn:hover {
+            background-color: #123149;
+        }
+
+        .message {
+            max-width: 500px;
+            margin: 0 auto 20px auto;
+            padding: 12px 15px;
+            border-radius: 5px;
+            background-color: #f8d7da;
+            color: #721c24;
+        }
+
+        .register-link {
+            text-align: center;
+            margin-top: 20px;
+        }
+
+        .register-link a {
+            color: #193f5c;
+            font-weight: bold;
+            text-decoration: none;
+        }
+
+        .back-btn {
+            display: inline-block;
+            margin-top: 25px;
+            padding: 10px 15px;
+            background-color: #193f5c;
+            color: white;
+            text-decoration: none;
+            border-radius: 5px;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="header">
+        <h1>CampusRide</h1>
+        <p>Student Login</p>
+    </div>
+
+    <div class="container">
+
+        <div class="page-title">
+            Student Login
+        </div>
+
+        {% if messages %}
+            {% for message in messages %}
+                <div class="message">
+                    {{ message }}
+                </div>
+            {% endfor %}
+        {% endif %}
+
+        <div class="form-card">
+
+            <form method="POST">
+
+                {% csrf_token %}
+
+                <div class="form-group">
+                    <label>Username</label>
+
+                    <input
+                        type="text"
+                        name="username"
+                        placeholder="Enter username"
+                        required
+                    >
+                </div>
+
+                <div class="form-group">
+                    <label>Password</label>
+
+                    <input
+                        type="password"
+                        name="password"
+                        placeholder="Enter password"
+                        required
+                    >
+                </div>
+
+                <button type="submit" class="login-btn">
+                    Login
+                </button>
+
+            </form>
+
+            <div class="register-link">
+                Don't have an account?
+                <a href="{% url 'student_register' %}">
+                    Register
+                </a>
+            </div>
+
+        </div>
+
+        <a href="{% url 'dashboard' %}" class="back-btn">
+            ← Back to Dashboard
+        </a>
+
+    </div>
+
+</body>
+
+</html>

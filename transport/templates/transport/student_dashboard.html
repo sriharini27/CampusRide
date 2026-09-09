@@ -1,0 +1,396 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
+
+    <title>Student Dashboard - CampusRide</title>
+
+    <style>
+
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background-color: #f1f3f6;
+            color: #000;
+        }
+
+        /* Header */
+
+        .header {
+            background-color: #193f5c;
+            color: white;
+            padding: 40px 20px 35px 20px;
+        }
+
+        .header h1 {
+            margin: 0;
+            font-size: 32px;
+            font-weight: bold;
+        }
+
+        .header p {
+            margin-top: 20px;
+            margin-bottom: 0;
+            font-size: 16px;
+        }
+
+        /* Main */
+
+        .container {
+            padding: 40px 30px;
+        }
+
+        .page-title {
+            font-size: 25px;
+            font-weight: bold;
+            margin-bottom: 30px;
+        }
+
+        /* Cards */
+
+        .cards {
+            display: grid;
+            grid-template-columns:
+                repeat(auto-fit, minmax(250px, 1fr));
+
+            gap: 25px;
+        }
+
+        .card {
+            background-color: white;
+            padding: 25px;
+            border-radius: 10px;
+
+            box-shadow:
+                0 3px 10px rgba(0, 0, 0, 0.15);
+        }
+
+        .card h3 {
+            margin-top: 0;
+            color: #193f5c;
+        }
+
+        .card p {
+            margin: 10px 0;
+        }
+
+        .label {
+            font-weight: bold;
+        }
+
+        /* Buttons */
+
+        .btn {
+            display: inline-block;
+
+            margin-top: 15px;
+
+            padding: 10px 18px;
+
+            background-color: #193f5c;
+
+            color: white;
+
+            text-decoration: none;
+
+            border-radius: 5px;
+        }
+
+        .btn:hover {
+            background-color: #123149;
+        }
+
+        /* Status */
+
+        .status {
+            display: inline-block;
+
+            padding: 6px 12px;
+
+            border-radius: 5px;
+
+            font-weight: bold;
+        }
+
+        .pending {
+            background-color: #fff3cd;
+            color: #856404;
+        }
+
+        .approved {
+            background-color: #d4edda;
+            color: #155724;
+        }
+
+        .rejected {
+            background-color: #f8d7da;
+            color: #721c24;
+        }
+
+        /* Logout */
+
+        .logout {
+            display: inline-block;
+
+            margin-top: 30px;
+
+            padding: 10px 18px;
+
+            background-color: #dc3545;
+
+            color: white;
+
+            text-decoration: none;
+
+            border-radius: 5px;
+        }
+
+        .logout:hover {
+            background-color: #b02a37;
+        }
+
+    </style>
+
+</head>
+
+<body>
+
+    <!-- Header -->
+
+    <div class="header">
+
+        <h1>CampusRide</h1>
+
+        <p>Student Dashboard</p>
+
+    </div>
+
+
+    <!-- Main Content -->
+
+    <div class="container">
+
+        <div class="page-title">
+
+            Welcome,
+            {{ student.user.get_full_name }}
+
+        </div>
+
+
+        <div class="cards">
+
+
+            <!-- Student Information -->
+
+            <div class="card">
+
+                <h3>Student Information</h3>
+
+                <p>
+                    <span class="label">
+                        Student ID:
+                    </span>
+
+                    {{ student.student_id }}
+                </p>
+
+                <p>
+                    <span class="label">
+                        Name:
+                    </span>
+
+                    {{ student.user.get_full_name }}
+                </p>
+
+                <p>
+                    <span class="label">
+                        Email:
+                    </span>
+
+                    {{ student.user.email }}
+                </p>
+
+                <p>
+                    <span class="label">
+                        Phone:
+                    </span>
+
+                    {{ student.phone }}
+                </p>
+
+                <p>
+                    <span class="label">
+                        Department:
+                    </span>
+
+                    {{ student.department }}
+                </p>
+
+                <p>
+                    <span class="label">
+                        Year:
+                    </span>
+
+                    {{ student.year }}
+                </p>
+
+            </div>
+
+
+            <!-- Route Information -->
+
+            <div class="card">
+
+                <h3>Route Information</h3>
+
+                {% if student.route %}
+
+                    <p>
+                        <span class="label">
+                            Route:
+                        </span>
+
+                        {{ student.route.route_number }}
+                    </p>
+
+                    <p>
+                        <span class="label">
+                            Route Name:
+                        </span>
+
+                        {{ student.route.route_name }}
+                    </p>
+
+                    <p>
+                        <span class="label">
+                            Start:
+                        </span>
+
+                        {{ student.route.start_point }}
+                    </p>
+
+                    <p>
+                        <span class="label">
+                            End:
+                        </span>
+
+                        {{ student.route.end_point }}
+                    </p>
+
+                {% else %}
+
+                    <p>
+                        No route assigned.
+                    </p>
+
+                {% endif %}
+
+            </div>
+
+
+            <!-- Bus Pass -->
+
+            <div class="card">
+
+                <h3>Bus Pass</h3>
+
+                {% if bus_pass %}
+
+                    <p>
+                        <span class="label">
+                            Status:
+                        </span>
+
+                        {% if bus_pass.status == "Pending" %}
+
+                            <span class="status pending">
+                                Pending
+                            </span>
+
+                        {% elif bus_pass.status == "Approved" %}
+
+                            <span class="status approved">
+                                Approved
+                            </span>
+
+                        {% elif bus_pass.status == "Rejected" %}
+
+                            <span class="status rejected">
+                                Rejected
+                            </span>
+
+                        {% endif %}
+
+                    </p>
+
+                    <p>
+                        <span class="label">
+                            Applied Date:
+                        </span>
+
+                        {{ bus_pass.applied_date|date:"d-m-Y" }}
+                    </p>
+
+                    {% if bus_pass.valid_from %}
+
+                        <p>
+                            <span class="label">
+                                Valid From:
+                            </span>
+
+                            {{ bus_pass.valid_from }}
+                        </p>
+
+                    {% endif %}
+
+                    {% if bus_pass.valid_until %}
+
+                        <p>
+                            <span class="label">
+                                Valid Until:
+                            </span>
+
+                            {{ bus_pass.valid_until }}
+                        </p>
+
+                    {% endif %}
+
+                {% else %}
+
+                    <p>
+                        You have not applied for a bus pass yet.
+                    </p>
+
+                    <a href="{% url 'apply_bus_pass' %}" class="btn">
+    Apply for Bus Pass
+</a>
+
+                {% endif %}
+
+            </div>
+
+
+        </div>
+
+
+        <!-- Logout -->
+
+        <a href="{% url 'student_logout' %}" class="logout">
+    Logout
+</a>
+
+    </div>
+
+</body>
+
+</html>

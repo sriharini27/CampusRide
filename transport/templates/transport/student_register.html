@@ -1,0 +1,245 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Student Registration - CampusRide</title>
+
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background-color: #f1f3f6;
+            color: #000;
+        }
+
+        /* Header - same CampusRide theme */
+        .header {
+            background-color: #193f5c;
+            color: white;
+            padding: 40px 20px 35px 20px;
+        }
+
+        .header h1 {
+            margin: 0;
+            font-size: 32px;
+            font-weight: bold;
+        }
+
+        .header p {
+            margin-top: 20px;
+            margin-bottom: 0;
+            font-size: 16px;
+        }
+
+        /* Main content */
+        .container {
+            padding: 45px 30px;
+        }
+
+        .page-title {
+            font-size: 25px;
+            font-weight: bold;
+            margin-bottom: 25px;
+        }
+
+        /* Form card */
+        .form-card {
+            background-color: white;
+            max-width: 700px;
+            margin: 0 auto;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 3px 10px rgba(0, 0, 0, 0.15);
+        }
+
+        .form-group {
+            margin-bottom: 18px;
+        }
+
+        .form-group label {
+            display: block;
+            font-weight: bold;
+            margin-bottom: 7px;
+        }
+
+        .form-group input,
+        .form-group select {
+            width: 100%;
+            padding: 11px 12px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            font-size: 15px;
+        }
+
+        .form-group input:focus,
+        .form-group select:focus {
+            outline: none;
+            border-color: #193f5c;
+        }
+
+        /* Django errors */
+        .errorlist {
+            color: #dc3545;
+            margin: 5px 0;
+            padding-left: 20px;
+            font-size: 14px;
+        }
+
+        /* Register button */
+        .register-btn {
+            width: 100%;
+            background-color: #193f5c;
+            color: white;
+            border: none;
+            padding: 12px;
+            border-radius: 5px;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            margin-top: 10px;
+        }
+
+        .register-btn:hover {
+            background-color: #123149;
+        }
+
+        /* Back button */
+        .back-btn {
+            display: inline-block;
+            margin-top: 25px;
+            padding: 10px 15px;
+            background-color: #193f5c;
+            color: white;
+            text-decoration: none;
+            border-radius: 5px;
+        }
+
+        .back-btn:hover {
+            background-color: #123149;
+        }
+
+        /* Success/Error messages */
+        .message {
+            max-width: 700px;
+            margin: 0 auto 20px auto;
+            padding: 12px 15px;
+            border-radius: 5px;
+            background-color: #d4edda;
+            color: #155724;
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- Header -->
+    <div class="header">
+        <h1>CampusRide</h1>
+        <p>Student Registration</p>
+    </div>
+
+    <!-- Main -->
+    <div class="container">
+
+        <div class="page-title">
+            Student Registration
+        </div>
+
+        {% if messages %}
+            {% for message in messages %}
+                <div class="message">
+                    {{ message }}
+                </div>
+            {% endfor %}
+        {% endif %}
+
+        <div class="form-card">
+
+            <form method="POST">
+
+                {% csrf_token %}
+
+                {{ form.non_field_errors }}
+
+                <div class="form-group">
+                    <label>Username</label>
+                    {{ form.username }}
+                    {{ form.username.errors }}
+                </div>
+
+                <div class="form-group">
+                    <label>Email</label>
+                    {{ form.email }}
+                    {{ form.email.errors }}
+                </div>
+
+                <div class="form-group">
+                    <label>Password</label>
+                    {{ form.password }}
+                    {{ form.password.errors }}
+                </div>
+
+                <div class="form-group">
+                    <label>First Name</label>
+                    {{ form.first_name }}
+                    {{ form.first_name.errors }}
+                </div>
+
+                <div class="form-group">
+                    <label>Last Name</label>
+                    {{ form.last_name }}
+                    {{ form.last_name.errors }}
+                </div>
+
+                <div class="form-group">
+                    <label>Student ID</label>
+                    {{ form.student_id }}
+                    {{ form.student_id.errors }}
+                </div>
+
+                <div class="form-group">
+                    <label>Phone</label>
+                    {{ form.phone }}
+                    {{ form.phone.errors }}
+                </div>
+
+                <div class="form-group">
+                    <label>Department</label>
+                    {{ form.department }}
+                    {{ form.department.errors }}
+                </div>
+
+                <div class="form-group">
+                    <label>Year</label>
+                    {{ form.year }}
+                    {{ form.year.errors }}
+                </div>
+
+                <div class="form-group">
+                    <label>Route</label>
+                    {{ form.route }}
+                    {{ form.route.errors }}
+                </div>
+
+                <button type="submit" class="register-btn">
+                    Register Student
+                </button>
+
+            </form>
+
+        </div>
+
+        <a href="{% url 'dashboard' %}" class="back-btn">
+            ← Back to Dashboard
+        </a>
+
+    </div>
+
+</body>
+</html>

@@ -1,7 +1,10 @@
 from django.shortcuts import render, redirect, get_object_or_404
-from .models import Route,Bus
-from .models import Stop
-from .models import RouteStop
+from django.contrib.auth import authenticate, login, logout
+from django.contrib.auth.models import User
+from django.contrib import messages
+
+from .models import Route, Bus, Stop, RouteStop, Student, BusPass
+from .forms import StudentRegistrationForm, BusPassApplicationForm
 
 
 def route_stop_list(request):
@@ -188,3 +191,141 @@ def route_delete(request, id):
     route.delete()
 
     return redirect("route_list")
+    
+def student_register(request):
+    if request.method == "POST":
+        form = StudentRegistrationForm(request.POST)
+
+        if form.is_valid():
+            user = User.objects.create_user(
+                username=form.cleaned_data["username"],
+                email=form.cleaned_data["email"],
+                password=form.cleaned_data["password"],
+                first_name=form.cleaned_data["first_name"],
+                last_name=form.cleaned_data["last_name"],
+            )
+
+            student = form.save(commit=False)
+            student.user = user
+            student.save()
+
+            messages.success(request, "Registration successful!")
+            return redirect("student_login")
+
+    else:
+        form = StudentRegistrationForm()
+
+    return render(request, "transport/student_register.html", {"form": form})
+
+def student_login(request):
+    if request.method == "POST":
+
+        username = request.POST.get("username")
+        password = request.POST.get("password")
+
+        user = authenticate(
+            request,
+            username=username,
+            password=password
+        )
+
+        if user is not None:
+
+            try:
+                Student.objects.get(user=user)
+
+                login(request, user)
+
+                return redirect("student_dashboard")
+
+            except Student.DoesNotExist:
+                messages.error(
+                    request,
+                    "This account is not registered as a student."
+                )
+
+        else:
+            messages.error(
+                request,
+                "Invalid username or password."
+            )
+
+    return render(
+        request,
+        "transport/student_login.html"
+    )
+
+def student_dashboard(request):
+    if not request.user.is_authenticated:
+        return redirect("student_login")
+
+    student = get_object_or_404(
+        Student,
+        user=request.user
+    )
+
+    try:
+        bus_pass = BusPass.objects.get(student=student)
+    except BusPass.DoesNotExist:
+        bus_pass = None
+
+    return render(
+        request,
+        "transport/student_dashboard.html",
+        {
+            "student": student,
+            "bus_pass": bus_pass,
+        }
+    )
+
+def apply_bus_pass(request):
+    if not request.user.is_authenticated:
+        return redirect("student_login")
+
+    student = get_object_or_404(
+        Student,
+        user=request.user
+    )
+
+    # Check if student already has a bus pass
+    if BusPass.objects.filter(student=student).exists():
+        messages.warning(
+            request,
+            "You have already applied for a bus pass."
+        )
+        return redirect("student_dashboard")
+
+    if request.method == "POST":
+
+        form = BusPassApplicationForm(request.POST)
+
+        if form.is_valid():
+
+            bus_pass = form.save(commit=False)
+
+            bus_pass.student = student
+            bus_pass.status = "Pending"
+
+            bus_pass.save()
+
+            messages.success(
+                request,
+                "Bus pass application submitted successfully!"
+            )
+
+            return redirect("student_dashboard")
+
+    else:
+        form = BusPassApplicationForm()
+
+    return render(
+        request,
+        "transport/bus_pass_apply.html",
+        {
+            "form": form
+        }
+    )
+
+def student_logout(request):
+    logout(request)
+    return redirect("student_login")

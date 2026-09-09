@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
+
+    <title>Apply Bus Pass - CampusRide</title>
+
+    <style>
+
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background-color: #f1f3f6;
+            color: #000;
+        }
+
+        .header {
+            background-color: #193f5c;
+            color: white;
+            padding: 40px 20px 35px 20px;
+        }
+
+        .header h1 {
+            margin: 0;
+            font-size: 32px;
+            font-weight: bold;
+        }
+
+        .header p {
+            margin-top: 20px;
+            margin-bottom: 0;
+            font-size: 16px;
+        }
+
+        .container {
+            padding: 45px 30px;
+        }
+
+        .page-title {
+            font-size: 25px;
+            font-weight: bold;
+            margin-bottom: 25px;
+        }
+
+        .form-card {
+            background-color: white;
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 30px;
+
+            border-radius: 10px;
+
+            box-shadow:
+                0 3px 10px rgba(0, 0, 0, 0.15);
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            font-weight: bold;
+            margin-bottom: 8px;
+        }
+
+        .form-group input {
+            width: 100%;
+            padding: 11px 12px;
+
+            border: 1px solid #ccc;
+            border-radius: 5px;
+
+            font-size: 15px;
+        }
+
+        .form-group input:focus {
+            outline: none;
+            border-color: #193f5c;
+        }
+
+        .errorlist {
+            color: #dc3545;
+            margin: 5px 0;
+            padding-left: 20px;
+        }
+
+        .submit-btn {
+            width: 100%;
+
+            background-color: #193f5c;
+            color: white;
+
+            border: none;
+
+            padding: 12px;
+
+            border-radius: 5px;
+
+            font-size: 16px;
+            font-weight: bold;
+
+            cursor: pointer;
+        }
+
+        .submit-btn:hover {
+            background-color: #123149;
+        }
+
+        .back-btn {
+            display: inline-block;
+
+            margin-top: 25px;
+
+            padding: 10px 15px;
+
+            background-color: #193f5c;
+
+            color: white;
+
+            text-decoration: none;
+
+            border-radius: 5px;
+        }
+
+        .info-box {
+            background-color: #e9f2f9;
+
+            padding: 15px;
+
+            border-left: 4px solid #193f5c;
+
+            margin-bottom: 25px;
+
+            border-radius: 5px;
+        }
+
+    </style>
+
+</head>
+
+<body>
+
+    <div class="header">
+
+        <h1>CampusRide</h1>
+
+        <p>Bus Pass Application</p>
+
+    </div>
+
+
+    <div class="container">
+
+        <div class="page-title">
+            Apply for Bus Pass
+        </div>
+
+
+        <div class="form-card">
+
+            <div class="info-box">
+
+                <strong>Bus Pass Application</strong>
+
+                <p>
+                    Enter the validity period for your
+                    college bus pass.
+                </p>
+
+            </div>
+
+
+            <form method="POST">
+
+                {% csrf_token %}
+
+                {{ form.non_field_errors }}
+
+
+                <div class="form-group">
+
+                    <label>
+                        Valid From
+                    </label>
+
+                    {{ form.valid_from }}
+
+                    {{ form.valid_from.errors }}
+
+                </div>
+
+
+                <div class="form-group">
+
+                    <label>
+                        Valid Until
+                    </label>
+
+                    {{ form.valid_until }}
+
+                    {{ form.valid_until.errors }}
+
+                </div>
+
+
+                <button
+                    type="submit"
+                    class="submit-btn"
+                >
+                    Submit Bus Pass Application
+                </button>
+
+            </form>
+
+
+            <a
+                href="{% url 'student_dashboard' %}"
+                class="back-btn"
+            >
+                ← Back to Dashboard
+            </a>
+
+        </div>
+
+    </div>
+
+</body>
+
+</html>
