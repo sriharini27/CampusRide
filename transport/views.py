@@ -2,6 +2,8 @@ from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.models import User
 from django.contrib import messages
+from django.contrib.auth.decorators import login_required, user_passes_test
+from django.db.models import Count
 
 from .models import Route, Bus, Stop, RouteStop, Student, BusPass
 from .forms import StudentRegistrationForm, BusPassApplicationForm
@@ -330,15 +332,26 @@ def student_logout(request):
     logout(request)
     return redirect("student_login")
 
+def admin_required(user):
+    return user.is_authenticated and user.is_staff
 
+@login_required(login_url="student_login")
+@user_passes_test(admin_required)
 def route_allocation(request):
-    routes = Route.objects.all()
-    students = Student.objects.select_related("user", "route").all()
+
+    routes = Route.objects.all().order_by("route_number")
+
+    students = Student.objects.select_related(
+        "user",
+        "route"
+    ).all().order_by("student_id")
 
     search = request.GET.get("search", "").strip()
     route_id = request.GET.get("route", "")
 
-    # Search students
+    # -----------------------------
+    # SEARCH STUDENTS
+    # -----------------------------
     if search:
         students = students.filter(
             student_id__icontains=search
@@ -348,27 +361,28 @@ def route_allocation(request):
             user__last_name__icontains=search
         )
 
-    # Filter by route
+    # -----------------------------
+    # FILTER BY ROUTE
+    # -----------------------------
     if route_id:
         students = students.filter(route_id=route_id)
 
-    # Allocate student to route
+    # -----------------------------
+    # ROUTE ALLOCATION
+    # -----------------------------
     if request.method == "POST":
+
         student_id = request.POST.get("student_id")
-        selected_route = request.POST.get("route_id")
+        selected_route_id = request.POST.get("route_id")
 
-        student = get_object_or_404(Student, id=student_id)
+        student = get_object_or_404(
+            Student,
+            id=student_id
+        )
 
-        if selected_route:
-            route = get_object_or_404(Route, id=selected_route)
-            student.route = route
-            student.save()
+        # Remove route allocation
+        if not selected_route_id:
 
-            messages.success(
-                request,
-                f"{student.student_id} allocated to {route.route_number}."
-            )
-        else:
             student.route = None
             student.save()
 
@@ -376,6 +390,103 @@ def route_allocation(request):
                 request,
                 f"{student.student_id} route allocation removed."
             )
+
+            return redirect("route_allocation")
+
+        # Get selected route
+        route = get_object_or_404(
+            Route,
+            id=selected_route_id
+        )
+
+        # -----------------------------
+        # CHECK BUS
+        # -----------------------------
+        bus = Bus.objects.filter(
+            route=route
+        ).first()
+
+        if not bus:
+
+            messages.error(
+                request,
+                f"No bus is assigned to {route.route_number}."
+            )
+
+            return redirect("route_allocation")
+
+        # -----------------------------
+        # CHECK BUS PASS
+        # -----------------------------
+        try:
+
+            bus_pass = BusPass.objects.get(
+                student=student
+            )
+
+            if bus_pass.status != "Approved":
+
+                messages.error(
+                    request,
+                    f"{student.student_id} does not have an approved bus pass."
+                )
+
+                return redirect("route_allocation")
+
+        except BusPass.DoesNotExist:
+
+            messages.error(
+                request,
+                f"{student.student_id} has not applied for a bus pass."
+            )
+
+            return redirect("route_allocation")
+
+        # -----------------------------
+        # CHECK IF ALREADY ON SAME ROUTE
+        # -----------------------------
+        if student.route_id == route.id:
+
+            messages.info(
+                request,
+                f"{student.student_id} is already allocated to {route.route_number}."
+            )
+
+            return redirect("route_allocation")
+
+        # -----------------------------
+        # CHECK BUS CAPACITY
+        # -----------------------------
+        current_passengers = Student.objects.filter(
+            route=route
+        ).count()
+
+        if current_passengers >= bus.capacity:
+
+            messages.error(
+                request,
+                f"Bus {bus.bus_number} is full. "
+                f"Capacity: {bus.capacity}."
+            )
+
+            return redirect("route_allocation")
+
+        # -----------------------------
+        # ALLOCATE STUDENT
+        # -----------------------------
+        student.route = route
+        student.save()
+
+        available_seats = bus.capacity - (
+            current_passengers + 1
+        )
+
+        messages.success(
+            request,
+            f"{student.student_id} allocated to "
+            f"{route.route_number}. "
+            f"{available_seats} seat(s) remaining."
+        )
 
         return redirect("route_allocation")
 
@@ -390,14 +501,28 @@ def route_allocation(request):
         }
     )
 
-
+@login_required(login_url="student_login")
+@user_passes_test(admin_required)
 def transport_dashboard(request):
-    routes = Route.objects.all()
-    buses = Bus.objects.all()
-    students = Student.objects.all()
+
+    routes = Route.objects.all().order_by("route_number")
+
+    buses = Bus.objects.select_related(
+        "route"
+    ).all()
+
+    students = Student.objects.select_related(
+        "route"
+    ).all()
+
+    # --------------------------------
+    # BASIC STATISTICS
+    # --------------------------------
 
     total_routes = routes.count()
+
     total_buses = buses.count()
+
     total_students = students.count()
 
     allocated_students = students.filter(
@@ -408,30 +533,85 @@ def transport_dashboard(request):
         route__isnull=True
     ).count()
 
-    total_capacity = sum(bus.capacity for bus in buses)
+    # --------------------------------
+    # TOTAL BUS CAPACITY
+    # --------------------------------
 
-    available_seats = total_capacity - allocated_students
+    total_capacity = sum(
+        bus.capacity for bus in buses
+    )
+
+    available_seats = max(
+        total_capacity - allocated_students,
+        0
+    )
+
+    # --------------------------------
+    # ROUTE-WISE AGGREGATION
+    # --------------------------------
+
+    route_passenger_counts = Student.objects.values(
+        "route"
+    ).annotate(
+        passenger_count=Count("id")
+    )
+
+    passenger_map = {
+        item["route"]: item["passenger_count"]
+        for item in route_passenger_counts
+    }
+
+    # --------------------------------
+    # ROUTE DATA
+    # --------------------------------
 
     route_data = []
 
     for route in routes:
-        passenger_count = students.filter(route=route).count()
-        bus = buses.filter(route=route).first()
+
+        bus = buses.filter(
+            route=route
+        ).first()
+
+        passenger_count = passenger_map.get(
+            route.id,
+            0
+        )
 
         if bus:
+
             capacity = bus.capacity
-            available = max(capacity - passenger_count, 0)
+
+            available = max(
+                capacity - passenger_count,
+                0
+            )
+
+            if passenger_count >= capacity:
+                status = "FULL"
+
+            elif passenger_count >= capacity * 0.8:
+                status = "NEAR FULL"
+
+            else:
+                status = "AVAILABLE"
+
         else:
+
             capacity = 0
             available = 0
+            status = "NO BUS"
 
-        route_data.append({
-            "route": route,
-            "bus": bus,
-            "passengers": passenger_count,
-            "capacity": capacity,
-            "available": available,
-        })
+        route_data.append(
+            {
+                "route": route,
+                "bus": bus,
+                "passengers": passenger_count,
+                "capacity": capacity,
+                "available": available,
+                "status": status,
+            }
+        )
 
     return render(
         request,
