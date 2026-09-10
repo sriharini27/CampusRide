@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Route Allocation</title>
+
+    <style>
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background-color: #f4f6f8;
+        }
+
+        .header {
+            background-color: #193f5b;
+            color: white;
+            padding: 40px 35px;
+        }
+
+        .header h1 {
+            margin: 0;
+            font-size: 34px;
+        }
+
+        .header p {
+            margin-top: 25px;
+            font-size: 18px;
+        }
+
+        .container {
+            padding: 45px 34px;
+        }
+
+        .filter-box {
+            background-color: white;
+            padding: 20px;
+            margin-bottom: 30px;
+            border-radius: 6px;
+        }
+
+        .filter-box input,
+        .filter-box select {
+            padding: 11px;
+            border: 1px solid #bbb;
+            border-radius: 5px;
+            font-size: 15px;
+            margin-right: 10px;
+        }
+
+        .search-btn {
+            background-color: #193f5b;
+            color: white;
+            border: none;
+            padding: 11px 18px;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            background-color: white;
+        }
+
+        th {
+            background-color: #193f5b;
+            color: white;
+            padding: 17px;
+            text-align: left;
+        }
+
+        td {
+            padding: 14px 17px;
+            border-bottom: 1px solid #ddd;
+        }
+
+        .back-btn {
+            display: inline-block;
+            margin-top: 25px;
+            background-color: #193f5b;
+            color: white;
+            padding: 12px 18px;
+            text-decoration: none;
+            border-radius: 6px;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="header">
+        <h1>CampusRide</h1>
+        <p>Route Allocation</p>
+    </div>
+
+    <div class="container">
+
+        <h2>Route-wise Student Allocation</h2>
+
+        <div class="filter-box">
+
+            <form method="GET">
+
+                <input
+                    type="text"
+                    name="search"
+                    placeholder="Search student name"
+                    value="{{ search }}"
+                >
+
+                <select name="route">
+
+                    <option value="">All Routes</option>
+
+                    {% for route in routes %}
+                    <option
+                        value="{{ route.id }}"
+                        {% if selected_route == route.id|stringformat:"s" %}
+                            selected
+                        {% endif %}
+                    >
+                        {{ route.route_number }} - {{ route.route_name }}
+                    </option>
+                    {% endfor %}
+
+                </select>
+
+                <button type="submit" class="search-btn">
+                    Search / Filter
+                </button>
+
+            </form>
+
+        </div>
+
+        <table>
+
+            <tr>
+                <th>Student</th>
+                <th>Register Number</th>
+                <th>Department</th>
+                <th>Route</th>
+                <th>Status</th>
+            </tr>
+
+            {% for pass in buspasses %}
+
+            <tr>
+                <td>{{ pass.student.name }}</td>
+                <td>{{ pass.student.register_number }}</td>
+                <td>{{ pass.student.department }}</td>
+
+                <td>
+                    {{ pass.route.route_number }} -
+                    {{ pass.route.route_name }}
+                </td>
+
+                <td>{{ pass.status }}</td>
+            </tr>
+
+            {% empty %}
+
+            <tr>
+                <td colspan="5">
+                    No students found
+                </td>
+            </tr>
+
+            {% endfor %}
+
+        </table>
+
+        <a href="{% url 'dashboard' %}" class="back-btn">
+            ← Back to Dashboard
+        </a>
+
+    </div>
+
+</body>
+</html>

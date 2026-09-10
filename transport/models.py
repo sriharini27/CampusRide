@@ -51,3 +51,33 @@ class RouteStop(models.Model):
 
     def __str__(self):
         return self.route.route_number + " - " + self.stop.stop_name
+
+class Student(models.Model):
+    name = models.CharField(max_length=100)
+    register_number = models.CharField(max_length=30, unique=True)
+    department = models.CharField(max_length=100)
+    year = models.IntegerField()
+    phone = models.CharField(max_length=15)
+
+    def __str__(self):
+        return self.register_number + " - " + self.name
+
+
+class BusPass(models.Model):
+    STATUS_CHOICES = [
+        ("Pending", "Pending"),
+        ("Approved", "Approved"),
+        ("Rejected", "Rejected"),
+    ]
+
+    student = models.ForeignKey(Student, on_delete=models.CASCADE)
+    route = models.ForeignKey(Route, on_delete=models.CASCADE)
+    application_date = models.DateField(auto_now_add=True)
+    status = models.CharField(
+        max_length=20,
+        choices=STATUS_CHOICES,
+        default="Pending"
+    )
+
+    def __str__(self):
+        return self.student.name + " - " + self.status

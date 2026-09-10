@@ -1,7 +1,8 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from .models import Route,Bus
 from .models import Stop
-from .models import RouteStop
+from .models import RouteStop,Student,BusPass
+from .forms import StudentForm, BusPassForm
 
 
 def route_stop_list(request):
@@ -133,12 +134,22 @@ def bus_delete(request, id):
     return redirect("bus_list")
 
 def dashboard(request):
+
     routes = Route.objects.count()
+    buses = Bus.objects.count()
+    students = Student.objects.count()
+    buspasses = BusPass.objects.count()
+    approved_passes = BusPass.objects.filter(
+        status="Approved"
+    ).count()
 
     return render(request, "transport/dashboard.html", {
-        "routes": routes
+        "routes": routes,
+        "buses": buses,
+        "students": students,
+        "buspasses": buspasses,
+        "approved_passes": approved_passes
     })
-
 
 def route_list(request):
     routes = Route.objects.all()
@@ -188,3 +199,106 @@ def route_delete(request, id):
     route.delete()
 
     return redirect("route_list")
+
+# Student Registration
+def student_list(request):
+    students = Student.objects.all()
+    return render(request, "transport/student_list.html", {
+        "students": students
+    })
+
+
+def student_create(request):
+    if request.method == "POST":
+        form = StudentForm(request.POST)
+
+        if form.is_valid():
+            form.save()
+            return redirect("student_list")
+    else:
+        form = StudentForm()
+
+    return render(request, "transport/student_form.html", {
+        "form": form
+    })
+
+
+# Bus Pass Management
+def buspass_list(request):
+    buspasses = BusPass.objects.all()
+    return render(request, "transport/buspass_list.html", {
+        "buspasses": buspasses
+    })
+
+
+def buspass_create(request):
+    if request.method == "POST":
+        form = BusPassForm(request.POST)
+
+        if form.is_valid():
+            form.save()
+            return redirect("buspass_list")
+    else:
+        form = BusPassForm()
+
+    return render(request, "transport/buspass_form.html", {
+        "form": form
+    })
+
+# Route Allocation + Search + Filter
+def route_allocation(request):
+
+    buspasses = BusPass.objects.select_related(
+        "student",
+        "route"
+    ).all()
+
+    search = request.GET.get("search", "")
+    route_id = request.GET.get("route", "")
+
+    # Search by student name
+    if search:
+        buspasses = buspasses.filter(
+            student__name__icontains=search
+        )
+
+    # Filter by route
+    if route_id:
+        buspasses = buspasses.filter(
+            route_id=route_id
+        )
+
+    routes = Route.objects.all()
+
+    return render(request, "transport/route_allocation.html", {
+        "buspasses": buspasses,
+        "routes": routes,
+        "search": search,
+        "selected_route": route_id
+    })
+
+# Bus Capacity Monitoring
+def bus_capacity(request):
+
+    buses = Bus.objects.select_related("route").all()
+
+    bus_data = []
+
+    for bus in buses:
+
+        allocated = BusPass.objects.filter(
+            route=bus.route,
+            status="Approved"
+        ).count()
+
+        available = bus.capacity - allocated
+
+        bus_data.append({
+            "bus": bus,
+            "allocated": allocated,
+            "available": available
+        })
+
+    return render(request, "transport/bus_capacity.html", {
+        "bus_data": bus_data
+    })

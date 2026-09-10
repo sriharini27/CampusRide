@@ -5,83 +5,139 @@
 
     <style>
         body {
-            font-family: Arial;
             margin: 0;
-            background: #f4f6f8;
+            font-family: Arial, sans-serif;
+            background-color: #f4f6f8;
         }
 
         .header {
-            background: #173b57;
+            background-color: #193f5b;
             color: white;
-            padding: 20px;
+            padding: 40px 35px;
+        }
+
+        .header h1 {
+            margin: 0;
+            font-size: 34px;
+        }
+
+        .header p {
+            margin-top: 25px;
+            font-size: 18px;
         }
 
         .container {
-            padding: 30px;
+            padding: 45px 34px;
+        }
+
+        h2 {
+            font-size: 28px;
+            margin-bottom: 30px;
         }
 
         .cards {
             display: flex;
             gap: 20px;
+            flex-wrap: wrap;
         }
 
         .card {
-            background: white;
-            padding: 25px;
+            background-color: white;
             width: 200px;
-            border-radius: 10px;
-            box-shadow: 0 2px 8px #ccc;
+            padding: 25px;
+            border-radius: 6px;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.08);
         }
 
-        .card h2 {
-            margin: 0;
+        .card h3 {
+            margin: 0 0 15px;
+            font-size: 18px;
         }
 
-        a {
-            text-decoration: none;
+        .number {
+            font-size: 32px;
+            font-weight: bold;
+            color: #193f5b;
+        }
+
+        .links {
+            margin-top: 40px;
+        }
+
+        .btn {
+            display: inline-block;
+            background-color: #193f5b;
             color: white;
-            background: #173b57;
-            padding: 10px 15px;
-            border-radius: 5px;
+            padding: 12px 18px;
+            text-decoration: none;
+            border-radius: 6px;
+            margin-right: 10px;
+            margin-bottom: 10px;
         }
     </style>
 </head>
 
 <body>
 
-<div class="header">
-    <h1>CampusRide</h1>
-    <p>College Transport & Bus Pass Management System</p>
-</div>
+    <div class="header">
+        <h1>CampusRide</h1>
+        <p>Administrative Dashboard</p>
+    </div>
 
-<div class="container">
+    <div class="container">
 
-    <h2>Transport Dashboard</h2>
+        <h2>Dashboard Overview</h2>
 
-    <div class="cards">
+        <div class="cards">
 
-        <div class="card">
-            <h2>{{ routes }}</h2>
-            <p>Total Routes</p>
+            <div class="card">
+                <h3>Total Routes</h3>
+                <div class="number">{{ routes }}</div>
+            </div>
 
-            <a href="{% url 'route_list' %}">
-                Manage Routes
+            <div class="card">
+                <h3>Total Buses</h3>
+                <div class="number">{{ buses }}</div>
+            </div>
+
+            <div class="card">
+                <h3>Total Students</h3>
+                <div class="number">{{ students }}</div>
+            </div>
+
+            <div class="card">
+                <h3>Bus Passes</h3>
+                <div class="number">{{ buspasses }}</div>
+            </div>
+
+            <div class="card">
+                <h3>Approved Passes</h3>
+                <div class="number">{{ approved_passes }}</div>
+            </div>
+
+        </div>
+
+        <div class="links">
+
+            <a href="{% url 'route_allocation' %}" class="btn">
+                Route Allocation
             </a>
-        </div>
 
-        <div class="card">
-            <h2>0</h2>
-            <p>Total Buses</p>
-        </div>
+            <a href="{% url 'bus_capacity' %}" class="btn">
+                Bus Capacity
+            </a>
 
-        <div class="card">
-            <h2>0</h2>
-            <p>Total Stops</p>
+            <a href="{% url 'student_list' %}" class="btn">
+                Students
+            </a>
+
+            <a href="{% url 'buspass_list' %}" class="btn">
+                Bus Passes
+            </a>
+
         </div>
 
     </div>
-
-</div>
 
 </body>
 </html>

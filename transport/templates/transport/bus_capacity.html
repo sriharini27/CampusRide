@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Bus Capacity Monitoring</title>
+
+    <style>
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background-color: #f4f6f8;
+        }
+
+        .header {
+            background-color: #193f5b;
+            color: white;
+            padding: 40px 35px;
+        }
+
+        .header h1 {
+            margin: 0;
+            font-size: 34px;
+        }
+
+        .header p {
+            margin-top: 25px;
+            font-size: 18px;
+        }
+
+        .container {
+            padding: 45px 34px;
+        }
+
+        h2 {
+            font-size: 28px;
+            margin-bottom: 35px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            background-color: white;
+        }
+
+        th {
+            background-color: #193f5b;
+            color: white;
+            padding: 17px;
+            text-align: left;
+        }
+
+        td {
+            padding: 14px 17px;
+            border-bottom: 1px solid #ddd;
+        }
+
+        .available {
+            color: green;
+            font-weight: bold;
+        }
+
+        .full {
+            color: red;
+            font-weight: bold;
+        }
+
+        .back-btn {
+            display: inline-block;
+            margin-top: 25px;
+            background-color: #193f5b;
+            color: white;
+            padding: 12px 18px;
+            text-decoration: none;
+            border-radius: 6px;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="header">
+        <h1>CampusRide</h1>
+        <p>Bus Capacity Monitoring</p>
+    </div>
+
+    <div class="container">
+
+        <h2>Bus Capacity Monitoring</h2>
+
+        <table>
+
+            <tr>
+                <th>Bus Number</th>
+                <th>Registration Number</th>
+                <th>Route</th>
+                <th>Capacity</th>
+                <th>Allocated Students</th>
+                <th>Available Seats</th>
+            </tr>
+
+            {% for item in bus_data %}
+
+            <tr>
+                <td>{{ item.bus.bus_number }}</td>
+
+                <td>{{ item.bus.registration_number }}</td>
+
+                <td>
+                    {{ item.bus.route.route_number }} -
+                    {{ item.bus.route.route_name }}
+                </td>
+
+                <td>{{ item.bus.capacity }}</td>
+
+                <td>{{ item.allocated }}</td>
+
+                <td>
+                    {% if item.available > 0 %}
+                        <span class="available">
+                            {{ item.available }}
+                        </span>
+                    {% else %}
+                        <span class="full">
+                            Full
+                        </span>
+                    {% endif %}
+                </td>
+            </tr>
+
+            {% empty %}
+
+            <tr>
+                <td colspan="6">
+                    No buses available
+                </td>
+            </tr>
+
+            {% endfor %}
+
+        </table>
+
+        <a href="{% url 'dashboard' %}" class="back-btn">
+            ← Back to Dashboard
+        </a>
+
+    </div>
+
+</body>
+</html>

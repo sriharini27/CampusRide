@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Student Registration</title>
+
+    <style>
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background-color: #f4f6f8;
+        }
+
+        .header {
+            background-color: #193f5b;
+            color: white;
+            padding: 40px 35px;
+        }
+
+        .header h1 {
+            margin: 0;
+            font-size: 34px;
+        }
+
+        .header p {
+            margin-top: 25px;
+            font-size: 18px;
+        }
+
+        .container {
+            padding: 45px 34px;
+        }
+
+        .title-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 40px;
+        }
+
+        h2 {
+            font-size: 28px;
+            margin: 0;
+        }
+
+        .add-btn {
+            background-color: #193f5b;
+            color: white;
+            padding: 12px 18px;
+            text-decoration: none;
+            border-radius: 6px;
+            font-size: 16px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            background-color: white;
+        }
+
+        th {
+            background-color: #193f5b;
+            color: white;
+            padding: 17px;
+            text-align: left;
+            font-size: 16px;
+        }
+
+        td {
+            padding: 14px 17px;
+            border-bottom: 1px solid #ddd;
+            font-size: 16px;
+        }
+
+        .edit-btn {
+            background-color: #f0ad00;
+            color: white;
+            padding: 9px 12px;
+            text-decoration: none;
+            border-radius: 5px;
+            margin-right: 5px;
+        }
+
+        .delete-btn {
+            background-color: #d9534f;
+            color: white;
+            padding: 9px 12px;
+            text-decoration: none;
+            border-radius: 5px;
+        }
+
+        .back-btn {
+            display: inline-block;
+            margin-top: 25px;
+            background-color: #193f5b;
+            color: white;
+            padding: 12px 18px;
+            text-decoration: none;
+            border-radius: 6px;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="header">
+        <h1>CampusRide</h1>
+        <p>Student Registration</p>
+    </div>
+
+    <div class="container">
+
+        <div class="title-row">
+            <h2>Student Registration</h2>
+
+            <a href="{% url 'student_create' %}" class="add-btn">
+                + Add Student
+            </a>
+        </div>
+
+        <table>
+
+            <tr>
+                <th>Name</th>
+                <th>Register Number</th>
+                <th>Department</th>
+                <th>Year</th>
+                <th>Phone</th>
+                <th>Actions</th>
+            </tr>
+
+            {% for student in students %}
+
+            <tr>
+                <td>{{ student.name }}</td>
+
+                <td>{{ student.register_number }}</td>
+
+                <td>{{ student.department }}</td>
+
+                <td>{{ student.year }}</td>
+
+                <td>{{ student.phone }}</td>
+
+                <td>
+                    <a href="#" class="edit-btn">Edit</a>
+
+                    <a href="#" class="delete-btn">Delete</a>
+                </td>
+            </tr>
+
+            {% empty %}
+
+            <tr>
+                <td colspan="6">
+                    No students registered
+                </td>
+            </tr>
+
+            {% endfor %}
+
+        </table>
+
+        <a href="{% url 'dashboard' %}" class="back-btn">
+            ← Back to Dashboard
+        </a>
+
+    </div>
+
+</body>
+</html>

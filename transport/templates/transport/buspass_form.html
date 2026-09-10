@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Apply for Bus Pass</title>
+
+    <style>
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background-color: #f4f6f8;
+        }
+
+        .header {
+            background-color: #193f5b;
+            color: white;
+            padding: 40px 35px;
+        }
+
+        .header h1 {
+            margin: 0;
+            font-size: 34px;
+        }
+
+        .header p {
+            margin-top: 25px;
+            font-size: 18px;
+        }
+
+        .container {
+            padding: 45px 34px;
+        }
+
+        h2 {
+            font-size: 28px;
+            margin-bottom: 30px;
+        }
+
+        .form-box {
+            background-color: white;
+            padding: 30px;
+            width: 550px;
+            border-radius: 6px;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.08);
+        }
+
+        .form-box p {
+            margin-bottom: 20px;
+        }
+
+        .form-box label {
+            display: block;
+            font-weight: bold;
+            margin-bottom: 7px;
+        }
+
+        .form-box select {
+            width: 100%;
+            padding: 11px;
+            border: 1px solid #bbb;
+            border-radius: 5px;
+            box-sizing: border-box;
+            font-size: 15px;
+        }
+
+        .apply-btn {
+            background-color: #193f5b;
+            color: white;
+            border: none;
+            padding: 12px 20px;
+            border-radius: 6px;
+            font-size: 16px;
+            cursor: pointer;
+        }
+
+        .apply-btn:hover {
+            background-color: #122f45;
+        }
+
+        .back-btn {
+            display: inline-block;
+            margin-top: 25px;
+            background-color: #193f5b;
+            color: white;
+            padding: 12px 18px;
+            text-decoration: none;
+            border-radius: 6px;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="header">
+        <h1>CampusRide</h1>
+        <p>Bus Pass Management</p>
+    </div>
+
+    <div class="container">
+
+        <h2>Apply for Bus Pass</h2>
+
+        <div class="form-box">
+
+            <form method="POST">
+
+                {% csrf_token %}
+
+                {{ form.as_p }}
+
+                <button type="submit" class="apply-btn">
+                    Apply for Bus Pass
+                </button>
+
+            </form>
+
+        </div>
+
+        <a href="{% url 'buspass_list' %}" class="back-btn">
+            ← Back to Bus Pass List
+        </a>
+
+    </div>
+
+</body>
+</html>
