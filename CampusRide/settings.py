@@ -99,10 +99,5 @@ LOGIN_REDIRECT_URL = 'student_dashboard'
 LOGOUT_REDIRECT_URL = 'landing_page'
 
 CSRF_TRUSTED_ORIGINS = [
-    origin.strip()
-    for origin in os.environ.get(
-        'DJANGO_CSRF_TRUSTED_ORIGINS',
-        ''
-    ).split(',')
-    if origin.strip()
+    'https://*.vercel.app',
 ]
