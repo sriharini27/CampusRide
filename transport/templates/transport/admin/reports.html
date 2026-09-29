@@ -1,0 +1,159 @@
+{% extends 'transport/base.html' %}
+{% load static %}
+
+{% block title %}Transport Reports & Analytics - CampusRide Admin{% endblock %}
+
+{% block content %}
+<div class="admin-wrapper">
+    {% include 'transport/includes/sidebar.html' %}
+
+    <div class="admin-content">
+        <div class="d-flex flex-wrap justify-content-between align-items-center gap-3 mb-4">
+            <div>
+                <h3 class="fw-bold mb-1 text-primary"><i class="bi bi-file-earmark-bar-graph me-2"></i>CampusRide System Reports</h3>
+                <p class="text-muted small mb-0">Comprehensive transport metrics, route usage, department distributions, and seat occupancy reports.</p>
+            </div>
+            <button onclick="window.print()" class="btn btn-success no-print">
+                <i class="bi bi-printer me-1"></i> Print Reports Summary
+            </button>
+        </div>
+
+        <!-- Summary KPIs -->
+        <div class="row g-3 mb-4">
+            <div class="col-md-4">
+                <div class="stat-card">
+                    <div>
+                        <div class="stat-label">Total Students</div>
+                        <div class="stat-value text-primary">{{ total_students }}</div>
+                    </div>
+                    <div class="stat-icon primary"><i class="bi bi-people"></i></div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="stat-card">
+                    <div>
+                        <div class="stat-label">Active Allocations</div>
+                        <div class="stat-value text-success">{{ total_allocations }}</div>
+                    </div>
+                    <div class="stat-icon success"><i class="bi bi-diagram-3"></i></div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="stat-card">
+                    <div>
+                        <div class="stat-label">Total Bus Passes</div>
+                        <div class="stat-value text-indigo">{{ total_passes }}</div>
+                    </div>
+                    <div class="stat-icon info"><i class="bi bi-card-checklist"></i></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Report 1: Route-wise Student Distribution -->
+        <div class="card-custom p-4 mb-4">
+            <h5 class="fw-bold text-primary mb-3"><i class="bi bi-signpost-split me-2"></i>Route-wise Student Utilization Report</h5>
+            <div class="table-responsive">
+                <table class="table table-bordered align-middle mb-0">
+                    <thead class="table-light">
+                        <tr>
+                            <th>Route Code</th>
+                            <th>Route Name</th>
+                            <th>Assigned Bus</th>
+                            <th>Bus Capacity</th>
+                            <th>Allocated Students</th>
+                            <th>Available Seats</th>
+                            <th>Occupancy %</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for r in routes %}
+                        <tr>
+                            <td class="fw-bold font-monospace">{{ r.route_code }}</td>
+                            <td>{{ r.route_name }}</td>
+                            <td>
+                                {% if r.bus %}{{ r.bus.bus_number }}{% else %}None{% endif %}
+                            </td>
+                            <td>{% if r.bus %}{{ r.bus.capacity }}{% else %}-{% endif %}</td>
+                            <td class="fw-bold text-primary">{{ r.allocated_students }}</td>
+                            <td>
+                                {% if r.bus %}{{ r.bus.available_seats }}{% else %}-{% endif %}
+                            </td>
+                            <td>
+                                {% if r.bus %}
+                                    <div class="d-flex align-items-center gap-2">
+                                        <div class="progress flex-grow-1" style="height: 8px;">
+                                            <div class="progress-bar occ-bar {% if r.bus.occupancy_percentage >= 100 %}bg-danger{% elif r.bus.occupancy_percentage >= 80 %}bg-warning{% else %}bg-success{% endif %}" style="--occ: {{ r.bus.occupancy_percentage }}%;"></div>
+                                        </div>
+
+                                        <span class="small fw-bold">{{ r.bus.occupancy_percentage }}%</span>
+                                    </div>
+                                {% else %}-{% endif %}
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- Report 2: Department-wise Students -->
+        <div class="row g-4 mb-4">
+            <div class="col-lg-6">
+                <div class="card-custom p-4 h-100">
+                    <h5 class="fw-bold text-primary mb-3"><i class="bi bi-building me-2"></i>Department-wise Transport Registrations</h5>
+                    <div class="table-responsive">
+                        <table class="table table-sm align-middle mb-0">
+                            <thead class="table-light">
+                                <tr>
+                                    <th>Department</th>
+                                    <th>Total Registered</th>
+                                    <th>Allocated Seats</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for d in department_stats %}
+                                <tr>
+                                    <td>{{ d.department }}</td>
+                                    <td class="fw-bold text-dark">{{ d.total_students }}</td>
+                                    <td class="fw-bold text-success">{{ d.allocated }}</td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Report 3: Pass Applications Summary -->
+            <div class="col-lg-6">
+                <div class="card-custom p-4 h-100">
+                    <h5 class="fw-bold text-primary mb-3"><i class="bi bi-card-heading me-2"></i>Bus Pass Status Breakdown</h5>
+                    <div class="table-responsive">
+                        <table class="table table-sm align-middle mb-0">
+                            <thead class="table-light">
+                                <tr>
+                                    <th>Application Status</th>
+                                    <th>Total Applications</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for ps in pass_stats %}
+                                <tr>
+                                    <td>
+                                        {% if ps.status == 'Approved' %}<span class="badge badge-approved">Approved</span>
+                                        {% elif ps.status == 'Pending' %}<span class="badge badge-pending">Pending</span>
+                                        {% elif ps.status == 'Rejected' %}<span class="badge badge-rejected">Rejected</span>
+                                        {% else %}<span class="badge badge-expired">Expired</span>{% endif %}
+                                    </td>
+                                    <td class="fw-bold fs-6">{{ ps.count }}</td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

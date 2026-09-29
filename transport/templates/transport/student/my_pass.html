@@ -1,0 +1,165 @@
+{% extends 'transport/base.html' %}
+{% load static %}
+
+{% block title %}My Bus Pass - CampusRide{% endblock %}
+
+{% block content %}
+<div class="container py-4">
+    <div class="d-flex flex-wrap justify-content-between align-items-center gap-3 mb-4">
+        <div>
+            <h2 class="mb-1 text-primary"><i class="bi bi-card-heading me-2"></i>My College Bus Pass</h2>
+            <p class="text-muted small mb-0">View submitted pass applications and print your approved digital transport pass.</p>
+        </div>
+
+        {% if latest_pass and latest_pass.status == 'Approved' %}
+            <button onclick="window.print()" class="btn btn-success shadow-sm no-print">
+                <i class="bi bi-printer me-1"></i> Print Digital Bus Pass
+            </button>
+        {% endif %}
+    </div>
+
+    {% if latest_pass %}
+        <!-- Digital Bus Pass Card (Printable) -->
+        <div class="row justify-content-center mb-5">
+            <div class="col-lg-8 col-xl-7">
+                <div class="bus-pass-card printable-pass">
+                    <!-- Pass Header -->
+                    <div class="bus-pass-header d-flex justify-content-between align-items-center">
+                        <div class="d-flex align-items-center gap-2">
+                            <i class="bi bi-bus-front-fill fs-3 text-indigo-400"></i>
+                            <div>
+                                <h4 class="mb-0 text-white fw-extrabold tracking-tight">CAMPUSRIDE</h4>
+                                <div class="fs-7 text-indigo-200 text-uppercase fw-semibold">COLLEGE TRANSPORTATION PASS</div>
+                            </div>
+                        </div>
+                        <div class="text-end">
+                            {% if latest_pass.status == 'Approved' %}
+                                <span class="badge badge-approved px-3 py-1.5 fs-6"><i class="bi bi-patch-check-fill me-1"></i> APPROVED</span>
+                            {% elif latest_pass.status == 'Pending' %}
+                                <span class="badge badge-pending px-3 py-1.5 fs-6"><i class="bi bi-clock-history me-1"></i> PENDING APPROVAL</span>
+                            {% elif latest_pass.status == 'Rejected' %}
+                                <span class="badge badge-rejected px-3 py-1.5 fs-6"><i class="bi bi-x-circle-fill me-1"></i> REJECTED</span>
+                            {% else %}
+                                <span class="badge badge-expired px-3 py-1.5 fs-6">EXPIRED</span>
+                            {% endif %}
+                        </div>
+                    </div>
+
+                    <!-- Pass Body Details -->
+                    <div class="bus-pass-body">
+                        <div class="row g-4">
+                            <div class="col-6 col-md-4">
+                                <div class="pass-field-label">Student Name</div>
+                                <div class="pass-field-value">{{ student.full_name }}</div>
+                            </div>
+
+                            <div class="col-6 col-md-4">
+                                <div class="pass-field-label">Student ID</div>
+                                <div class="pass-field-value text-indigo-300">{{ student.student_id }}</div>
+                            </div>
+
+                            <div class="col-6 col-md-4">
+                                <div class="pass-field-label">Department</div>
+                                <div class="pass-field-value fs-6">{{ student.department }}</div>
+                            </div>
+
+                            <div class="col-6 col-md-4">
+                                <div class="pass-field-label">Route Code & Name</div>
+                                <div class="pass-field-value text-indigo-200 fs-6">{{ latest_pass.route.route_code }} - {{ latest_pass.route.route_name }}</div>
+                            </div>
+
+                            <div class="col-6 col-md-4">
+                                <div class="pass-field-label">Boarding Stop</div>
+                                <div class="pass-field-value fs-6">{{ latest_pass.stop.stop_name }}</div>
+                            </div>
+
+                            <div class="col-6 col-md-4">
+                                <div class="pass-field-label">Assigned Bus</div>
+                                <div class="pass-field-value text-warning">
+                                    {% if latest_pass.route.bus %}
+                                        {{ latest_pass.route.bus.bus_number }}
+                                    {% else %}
+                                        Unassigned
+                                    {% endif %}
+                                </div>
+                            </div>
+
+                            <div class="col-6 col-md-4">
+                                <div class="pass-field-label">Pass Number</div>
+                                <div class="pass-field-value font-monospace text-info fs-6">{{ latest_pass.pass_number }}</div>
+                            </div>
+
+                            <div class="col-6 col-md-4">
+                                <div class="pass-field-label">Valid From</div>
+                                <div class="pass-field-value fs-6">{{ latest_pass.valid_from }}</div>
+                            </div>
+
+                            <div class="col-6 col-md-4">
+                                <div class="pass-field-label">Valid Until</div>
+                                <div class="pass-field-value fs-6 text-success">{{ latest_pass.valid_until }}</div>
+                            </div>
+                        </div>
+
+                        {% if latest_pass.remarks %}
+                            <div class="mt-4 p-2.5 rounded bg-black bg-opacity-25 border border-white border-opacity-10 small">
+                                <span class="text-indigo-300 fw-bold me-1">Remarks:</span> {{ latest_pass.remarks }}
+                            </div>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    {% else %}
+        <div class="alert alert-info text-center py-4 my-4">
+            <i class="bi bi-info-circle-fill fs-3 d-block mb-2 text-primary"></i>
+            <h5>No Bus Pass Applied</h5>
+            <p class="text-muted">You haven't submitted any bus pass application yet.</p>
+            <a href="{% url 'apply_bus_pass' %}" class="btn btn-primary mt-2"><i class="bi bi-plus-circle me-1"></i> Apply For Bus Pass Now</a>
+        </div>
+    {% endif %}
+
+    <!-- Pass Application History Table -->
+    <div class="card-custom p-4 no-print">
+        <h5 class="fw-bold text-primary mb-3"><i class="bi bi-clock-history me-2"></i>All Submitted Applications</h5>
+        <div class="table-responsive">
+            <table class="table table-hover align-middle mb-0">
+                <thead class="table-light">
+                    <tr>
+                        <th>Pass Number</th>
+                        <th>Applied On</th>
+                        <th>Route</th>
+                        <th>Stop</th>
+                        <th>Valid Period</th>
+                        <th>Status</th>
+                        <th>Payment</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for pass in passes %}
+                    <tr>
+                        <td class="fw-bold font-monospace">{{ pass.pass_number }}</td>
+                        <td>{{ pass.application_date }}</td>
+                        <td>{{ pass.route.route_code }}</td>
+                        <td>{{ pass.stop.stop_name }}</td>
+                        <td>{{ pass.valid_from }} to {{ pass.valid_until }}</td>
+                        <td>
+                            {% if pass.status == 'Approved' %}<span class="badge badge-approved">Approved</span>
+                            {% elif pass.status == 'Pending' %}<span class="badge badge-pending">Pending</span>
+                            {% elif pass.status == 'Rejected' %}<span class="badge badge-rejected">Rejected</span>
+                            {% else %}<span class="badge badge-expired">Expired</span>{% endif %}
+                        </td>
+                        <td>
+                            <span class="badge bg-light text-dark border">{{ pass.payment_status }}</span>
+                        </td>
+                    </tr>
+                    {% empty %}
+                    <tr>
+                        <td colspan="7" class="text-center py-4 text-muted">No pass applications found.</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+{% endblock %}

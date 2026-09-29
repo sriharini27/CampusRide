@@ -1,0 +1,82 @@
+{% extends 'transport/base.html' %}
+{% load static %}
+
+{% block title %}Apply for Bus Pass - CampusRide{% endblock %}
+
+{% block content %}
+<div class="container py-4">
+    <div class="row justify-content-center">
+        <div class="col-lg-7">
+            <div class="card-custom p-4 p-md-5 shadow-lg">
+                <div class="text-center mb-4">
+                    <div class="stat-icon primary mx-auto mb-3">
+                        <i class="bi bi-card-checklist"></i>
+                    </div>
+                    <h3 class="fw-bold text-primary">Apply for College Bus Pass</h3>
+                    <p class="text-muted small">Select your college route and boarding stop to submit your pass application.</p>
+                </div>
+
+                <form method="POST" action="{% url 'apply_bus_pass' %}" id="passApplicationForm">
+                    {% csrf_token %}
+
+                    <div class="bg-light p-3 rounded-3 mb-4 border">
+                        <div class="row g-2 text-muted small">
+                            <div class="col-6">Applicant Name: <strong class="text-dark">{{ student.full_name }}</strong></div>
+                            <div class="col-6">Student ID: <strong class="text-dark">{{ student.student_id }}</strong></div>
+                            <div class="col-6">Department: <strong class="text-dark">{{ student.department }}</strong></div>
+                            <div class="col-6">Year: <strong class="text-dark">{{ student.year }}</strong></div>
+                        </div>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="id_route" class="form-label fw-semibold">Select Route <span class="text-danger">*</span></label>
+                        {{ form.route }}
+                        {% if form.route.errors %}
+                            <div class="text-danger small mt-1">{{ form.route.errors.0 }}</div>
+                        {% endif %}
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="id_stop" class="form-label fw-semibold">Select Boarding Stop <span class="text-danger">*</span></label>
+                        {{ form.stop }}
+                        <div class="form-text text-muted">Stops update dynamically based on the selected route.</div>
+                        {% if form.stop.errors %}
+                            <div class="text-danger small mt-1">{{ form.stop.errors.0 }}</div>
+                        {% endif %}
+                    </div>
+
+                    <div class="row g-3 mb-4">
+                        <div class="col-md-6">
+                            <label class="form-label fw-semibold">Valid From <span class="text-danger">*</span></label>
+                            {{ form.valid_from }}
+                            {% if form.valid_from.errors %}
+                                <div class="text-danger small mt-1">{{ form.valid_from.errors.0 }}</div>
+                            {% endif %}
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label fw-semibold">Valid Until <span class="text-danger">*</span></label>
+                            {{ form.valid_until }}
+                            {% if form.valid_until.errors %}
+                                <div class="text-danger small mt-1">{{ form.valid_until.errors.0 }}</div>
+                            {% endif %}
+                        </div>
+                    </div>
+
+                    {% if form.non_field_errors %}
+                        <div class="alert alert-danger mb-4">
+                            <i class="bi bi-exclamation-triangle-fill me-2"></i> {{ form.non_field_errors.0 }}
+                        </div>
+                    {% endif %}
+
+                    <div class="d-flex justify-content-between align-items-center pt-3 border-top">
+                        <a href="{% url 'student_dashboard' %}" class="btn btn-outline-secondary">Cancel</a>
+                        <button type="submit" class="btn btn-primary px-4 py-2">
+                            <i class="bi bi-send me-1"></i> Submit Application
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

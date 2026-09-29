@@ -1,0 +1,125 @@
+<nav class="navbar navbar-expand-lg navbar-dark navbar-custom sticky-top">
+    <div class="container-fluid px-lg-4">
+        <a class="navbar-brand" href="{% if user.is_authenticated %}{% if user.is_staff or user.is_superuser %}{% url 'admin_dashboard' %}{% else %}{% url 'student_dashboard' %}{% endif %}{% else %}{% url 'landing_page' %}{% endif %}">
+            <i class="bi bi-bus-front-fill"></i> CampusRide
+            {% if user.is_authenticated and user.is_staff %}
+                <span class="badge bg-indigo-500 text-white ms-2 fs-7 px-2 py-1 bg-primary">ADMIN</span>
+            {% endif %}
+        </a>
+
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarMain">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+
+        <div class="collapse navbar-collapse" id="navbarMain">
+            <ul class="navbar-nav ms-auto align-items-lg-center gap-lg-1">
+                {% if user.is_authenticated %}
+                    {% if user.is_staff or user.is_superuser %}
+                        <!-- Admin Navigation Items -->
+                        <li class="nav-item">
+                            <a class="nav-link {% if request.resolver_match.url_name == 'admin_dashboard' %}active{% endif %}" href="{% url 'admin_dashboard' %}">
+                                <i class="bi bi-speedometer2 me-1"></i> Dashboard
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link {% if request.resolver_match.url_name == 'admin_student_list' %}active{% endif %}" href="{% url 'admin_student_list' %}">
+                                <i class="bi bi-people me-1"></i> Students
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link {% if 'bus' in request.resolver_match.url_name and 'pass' not in request.resolver_match.url_name %}active{% endif %}" href="{% url 'admin_bus_list' %}">
+                                <i class="bi bi-bus-front me-1"></i> Buses
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link {% if 'route' in request.resolver_match.url_name and 'alloc' not in request.resolver_match.url_name %}active{% endif %}" href="{% url 'admin_route_list' %}">
+                                <i class="bi bi-signpost-split me-1"></i> Routes
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link {% if 'stop' in request.resolver_match.url_name %}active{% endif %}" href="{% url 'admin_stop_list' %}">
+                                <i class="bi bi-geo-alt me-1"></i> Stops
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link {% if 'pass' in request.resolver_match.url_name %}active{% endif %}" href="{% url 'admin_pass_applications' %}">
+                                <i class="bi bi-card-checklist me-1"></i> Applications
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link {% if 'alloc' in request.resolver_match.url_name %}active{% endif %}" href="{% url 'admin_route_allocation' %}">
+                                <i class="bi bi-diagram-3 me-1"></i> Allocations
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link {% if 'capacity' in request.resolver_match.url_name %}active{% endif %}" href="{% url 'admin_capacity_monitoring' %}">
+                                <i class="bi bi-pie-chart me-1"></i> Capacity
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link {% if 'report' in request.resolver_match.url_name %}active{% endif %}" href="{% url 'admin_reports' %}">
+                                <i class="bi bi-file-earmark-bar-graph me-1"></i> Reports
+                            </a>
+                        </li>
+                        <li class="nav-item ms-lg-2">
+                            <a class="btn btn-outline-light btn-sm px-3" href="{% url 'user_logout' %}">
+                                <i class="bi bi-box-arrow-right me-1"></i> Logout
+                            </a>
+                        </li>
+                    {% else %}
+                        <!-- Student Navigation Items -->
+                        <li class="nav-item">
+                            <a class="nav-link {% if request.resolver_match.url_name == 'student_dashboard' %}active{% endif %}" href="{% url 'student_dashboard' %}">
+                                <i class="bi bi-speedometer2 me-1"></i> Dashboard
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link {% if request.resolver_match.url_name == 'student_routes_list' %}active{% endif %}" href="{% url 'student_routes_list' %}">
+                                <i class="bi bi-map me-1"></i> Routes
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link {% if request.resolver_match.url_name == 'apply_bus_pass' %}active{% endif %}" href="{% url 'apply_bus_pass' %}">
+                                <i class="bi bi-plus-circle me-1"></i> Apply Pass
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link {% if request.resolver_match.url_name == 'my_bus_pass' %}active{% endif %}" href="{% url 'my_bus_pass' %}">
+                                <i class="bi bi-card-heading me-1"></i> My Pass
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link {% if request.resolver_match.url_name == 'my_allocated_route' %}active{% endif %}" href="{% url 'my_allocated_route' %}">
+                                <i class="bi bi-pin-map me-1"></i> My Route
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link {% if request.resolver_match.url_name == 'student_profile' %}active{% endif %}" href="{% url 'student_profile' %}">
+                                <i class="bi bi-person-circle me-1"></i> Profile
+                            </a>
+                        </li>
+                        <li class="nav-item ms-lg-2">
+                            <a class="btn btn-outline-light btn-sm px-3" href="{% url 'user_logout' %}">
+                                <i class="bi bi-box-arrow-right me-1"></i> Logout
+                            </a>
+                        </li>
+                    {% endif %}
+                {% else %}
+                    <!-- Unauthenticated Public Navigation Items -->
+                    <li class="nav-item">
+                        <a class="nav-link {% if request.resolver_match.url_name == 'landing_page' %}active{% endif %}" href="{% url 'landing_page' %}">Home</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link {% if request.resolver_match.url_name == 'student_routes_list' %}active{% endif %}" href="{% url 'student_routes_list' %}">Explore Routes</a>
+                    </li>
+                    <li class="nav-item ms-lg-2">
+                        <a class="btn btn-outline-light btn-sm me-2 px-3" href="{% url 'user_login' %}">Student Login</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="btn btn-primary btn-sm px-3" href="{% url 'student_register' %}">Register Student</a>
+                    </li>
+                {% endif %}
+            </ul>
+        </div>
+    </div>
+</nav>

@@ -1,0 +1,128 @@
+{% extends 'transport/base.html' %}
+{% load static %}
+
+{% block title %}Student Registration - CampusRide{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-lg-8">
+            <div class="card-custom p-4 p-md-5 shadow-lg">
+                <div class="text-center mb-4">
+                    <div class="stat-icon primary mx-auto mb-3">
+                        <i class="bi bi-person-plus-fill"></i>
+                    </div>
+                    <h3 class="fw-bold">Student Registration</h3>
+                    <p class="text-muted">Register your student account to apply for college bus passes and route allocations.</p>
+                </div>
+
+                <form method="POST" action="{% url 'student_register' %}" class="needs-validation" novalidate>
+                    {% csrf_token %}
+
+                    <h5 class="text-primary border-bottom pb-2 mb-3"><i class="bi bi-shield-lock me-2"></i>Account Credentials</h5>
+                    <div class="row g-3 mb-4">
+                        <div class="col-md-4">
+                            <label class="form-label fw-semibold">Username <span class="text-danger">*</span></label>
+                            {{ form.username }}
+                            {% if form.username.errors %}
+                                <div class="text-danger small mt-1">{{ form.username.errors.0 }}</div>
+                            {% endif %}
+                        </div>
+                        <div class="col-md-4">
+                            <label class="form-label fw-semibold">Password <span class="text-danger">*</span></label>
+                            {{ form.password }}
+                            {% if form.password.errors %}
+                                <div class="text-danger small mt-1">{{ form.password.errors.0 }}</div>
+                            {% endif %}
+                        </div>
+                        <div class="col-md-4">
+                            <label class="form-label fw-semibold">Confirm Password <span class="text-danger">*</span></label>
+                            {{ form.confirm_password }}
+                            {% if form.confirm_password.errors %}
+                                <div class="text-danger small mt-1">{{ form.confirm_password.errors.0 }}</div>
+                            {% endif %}
+                        </div>
+                    </div>
+
+                    <h5 class="text-primary border-bottom pb-2 mb-3"><i class="bi bi-person-vcard me-2"></i>Personal & Academic Information</h5>
+                    <div class="row g-3 mb-4">
+                        <div class="col-md-4">
+                            <label class="form-label fw-semibold">Student ID <span class="text-danger">*</span></label>
+                            {{ form.student_id }}
+                            {% if form.student_id.errors %}
+                                <div class="text-danger small mt-1">{{ form.student_id.errors.0 }}</div>
+                            {% endif %}
+                        </div>
+                        <div class="col-md-8">
+                            <label class="form-label fw-semibold">Full Name <span class="text-danger">*</span></label>
+                            {{ form.full_name }}
+                            {% if form.full_name.errors %}
+                                <div class="text-danger small mt-1">{{ form.full_name.errors.0 }}</div>
+                            {% endif %}
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label fw-semibold">Email Address <span class="text-danger">*</span></label>
+                            {{ form.email }}
+                            {% if form.email.errors %}
+                                <div class="text-danger small mt-1">{{ form.email.errors.0 }}</div>
+                            {% endif %}
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label fw-semibold">Phone Number <span class="text-danger">*</span></label>
+                            {{ form.phone }}
+                            {% if form.phone.errors %}
+                                <div class="text-danger small mt-1">{{ form.phone.errors.0 }}</div>
+                            {% endif %}
+                        </div>
+
+                        <div class="col-md-5">
+                            <label class="form-label fw-semibold">Department <span class="text-danger">*</span></label>
+                            {{ form.department }}
+                            {% if form.department.errors %}
+                                <div class="text-danger small mt-1">{{ form.department.errors.0 }}</div>
+                            {% endif %}
+                        </div>
+                        <div class="col-md-3">
+                            <label class="form-label fw-semibold">Year <span class="text-danger">*</span></label>
+                            {{ form.year }}
+                            {% if form.year.errors %}
+                                <div class="text-danger small mt-1">{{ form.year.errors.0 }}</div>
+                            {% endif %}
+                        </div>
+                        <div class="col-md-2">
+                            <label class="form-label fw-semibold">Section</label>
+                            {{ form.section }}
+                        </div>
+                        <div class="col-md-2">
+                            <label class="form-label fw-semibold">Gender</label>
+                            {{ form.gender }}
+                        </div>
+
+                        <div class="col-md-7">
+                            <label class="form-label fw-semibold">Residential Address <span class="text-danger">*</span></label>
+                            {{ form.address }}
+                            {% if form.address.errors %}
+                                <div class="text-danger small mt-1">{{ form.address.errors.0 }}</div>
+                            {% endif %}
+                        </div>
+                        <div class="col-md-5">
+                            <label class="form-label fw-semibold">Emergency Contact Number <span class="text-danger">*</span></label>
+                            {{ form.emergency_contact }}
+                            {% if form.emergency_contact.errors %}
+                                <div class="text-danger small mt-1">{{ form.emergency_contact.errors.0 }}</div>
+                            {% endif %}
+                        </div>
+                    </div>
+
+                    <div class="d-flex justify-content-between align-items-center mt-4 pt-3 border-top">
+                        <a href="{% url 'user_login' %}" class="text-decoration-none"><i class="bi bi-arrow-left me-1"></i> Already registered? Log in</a>
+                        <button type="submit" class="btn btn-primary px-4 py-2">
+                            <i class="bi bi-check-circle me-1"></i> Register Student
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

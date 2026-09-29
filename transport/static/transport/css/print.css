@@ -1,0 +1,61 @@
+/* ==========================================================
+   CampusRide - Print Media Stylesheet
+   Activated on window.print() to print digital bus passes
+========================================================== */
+
+@media print {
+    /* Hide Navigation, Sidebar, Buttons, Footers, and Non-Print Containers */
+    nav,
+    .navbar,
+    .admin-sidebar,
+    footer,
+    .btn,
+    .no-print,
+    .alert,
+    .breadcrumb,
+    .action-bar {
+        display: none !important;
+    }
+
+    body {
+        background: #ffffff !important;
+        color: #000000 !important;
+        padding: 0 !important;
+        margin: 0 !important;
+    }
+
+    .container, .container-fluid, .admin-content {
+        width: 100% !important;
+        max-width: 100% !important;
+        padding: 0 !important;
+        margin: 0 !important;
+        box-shadow: none !important;
+    }
+
+    /* Print Card Specific Styling */
+    .printable-pass {
+        border: 2px solid #000000 !important;
+        background: #ffffff !important;
+        color: #000000 !important;
+        box-shadow: none !important;
+        margin: 2rem auto !important;
+        max-width: 600px !important;
+        padding: 2rem !important;
+        border-radius: 12px !important;
+        page-break-inside: avoid;
+    }
+
+    .printable-pass * {
+        color: #000000 !important;
+    }
+
+    .printable-pass .pass-header {
+        border-bottom: 2px solid #000000 !important;
+        padding-bottom: 1rem !important;
+        margin-bottom: 1.5rem !important;
+    }
+
+    .printable-pass .watermark {
+        opacity: 0.1 !important;
+    }
+}

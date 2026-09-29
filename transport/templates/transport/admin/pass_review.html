@@ -1,0 +1,97 @@
+{% extends 'transport/base.html' %}
+{% load static %}
+
+{% block title %}Review Pass {{ bus_pass.pass_number }} - CampusRide Admin{% endblock %}
+
+{% block content %}
+<div class="admin-wrapper">
+    {% include 'transport/includes/sidebar.html' %}
+
+    <div class="admin-content">
+        <div class="mb-3">
+            <a href="{% url 'admin_pass_applications' %}" class="btn btn-sm btn-outline-secondary"><i class="bi bi-arrow-left"></i> Back to Pass Applications</a>
+        </div>
+
+        <div class="row justify-content-center">
+            <div class="col-lg-8">
+                <div class="card-custom p-4 p-md-5">
+                    <div class="d-flex justify-content-between align-items-center mb-4 pb-3 border-bottom">
+                        <div>
+                            <h4 class="fw-bold text-primary mb-1">Pass Review & Decision</h4>
+                            <div class="font-monospace text-muted">Pass ID: {{ bus_pass.pass_number }}</div>
+                        </div>
+                        <div>
+                            {% if bus_pass.status == 'Approved' %}<span class="badge badge-approved fs-6">Approved</span>
+                            {% elif bus_pass.status == 'Pending' %}<span class="badge badge-pending fs-6">Pending</span>
+                            {% elif bus_pass.status == 'Rejected' %}<span class="badge badge-rejected fs-6">Rejected</span>
+                            {% else %}<span class="badge badge-expired fs-6">Expired</span>{% endif %}
+                        </div>
+                    </div>
+
+                    <!-- Applicant & Route Info Card -->
+                    <div class="bg-light p-4 rounded-3 border mb-4">
+                        <div class="row g-3">
+                            <div class="col-md-6">
+                                <span class="small text-muted text-uppercase fw-bold">Student Details</span>
+                                <div class="fs-5 fw-bold text-dark">{{ bus_pass.student.full_name }}</div>
+                                <div class="small text-muted">ID: {{ bus_pass.student.student_id }} | Dept: {{ bus_pass.student.department }} ({{ bus_pass.student.year }})</div>
+                                <div class="small text-muted">Mobile: {{ bus_pass.student.phone }}</div>
+                            </div>
+                            <div class="col-md-6">
+                                <span class="small text-muted text-uppercase fw-bold">Route & Bus Capacity</span>
+                                <div class="fs-5 fw-bold text-primary">{{ bus_pass.route.route_code }} - {{ bus_pass.route.route_name }}</div>
+                                <div class="small text-muted">Boarding Stop: <strong>{{ bus_pass.stop.stop_name }}</strong></div>
+                                {% if bus_pass.route.bus %}
+                                    <div class="small text-dark mt-1">Assigned Bus: <strong>{{ bus_pass.route.bus.bus_number }}</strong> (Capacity: {{ bus_pass.route.bus.allocated_count }}/{{ bus_pass.route.bus.capacity }} seats)</div>
+                                {% else %}
+                                    <div class="small text-danger mt-1">Warning: No bus currently assigned to this route.</div>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Review Form -->
+                    <form method="POST">
+                        {% csrf_token %}
+
+                        <div class="mb-4">
+                            <label class="form-label fw-bold text-dark">Decision Action <span class="text-danger">*</span></label>
+                            <div class="d-flex gap-4">
+                                <div class="form-check">
+                                    <input class="form-check-input" type="radio" name="action" id="actionApprove" value="Approve" {% if bus_pass.status != 'Rejected' %}checked{% endif %}>
+                                    <label class="form-check-label fw-semibold text-success" for="actionApprove">
+                                        <i class="bi bi-check-circle-fill me-1"></i> Approve Application & Allocate Student
+                                    </label>
+                                </div>
+                                <div class="form-check">
+                                    <input class="form-check-input" type="radio" name="action" id="actionReject" value="Reject" {% if bus_pass.status == 'Rejected' %}checked{% endif %}>
+                                    <label class="form-check-label fw-semibold text-danger" for="actionReject">
+                                        <i class="bi bi-x-circle-fill me-1"></i> Reject Application
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label fw-semibold">Payment Status</label>
+                            {{ form.payment_status }}
+                        </div>
+
+                        <div class="mb-4">
+                            <label class="form-label fw-semibold">Admin Remarks / Reason</label>
+                            {{ form.remarks }}
+                        </div>
+
+                        <div class="d-flex justify-content-end gap-2 pt-3 border-top">
+                            <a href="{% url 'admin_pass_applications' %}" class="btn btn-outline-secondary">Cancel</a>
+                            <button type="submit" class="btn btn-primary px-4">
+                                <i class="bi bi-save me-1"></i> Submit Decision
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

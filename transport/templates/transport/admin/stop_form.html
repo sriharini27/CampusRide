@@ -1,0 +1,85 @@
+{% extends 'transport/base.html' %}
+{% load static %}
+
+{% block title %}{{ title }} - CampusRide Admin{% endblock %}
+
+{% block content %}
+<div class="admin-wrapper">
+    {% include 'transport/includes/sidebar.html' %}
+
+    <div class="admin-content">
+        <div class="mb-3">
+            <a href="{% url 'admin_stop_list' %}" class="btn btn-sm btn-outline-secondary"><i class="bi bi-arrow-left"></i> Back to Stops List</a>
+        </div>
+
+        <div class="row justify-content-center">
+            <div class="col-lg-7">
+                <div class="card-custom p-4 p-md-5">
+                    <h4 class="fw-bold text-primary mb-4"><i class="bi bi-geo-alt me-2"></i>{{ title }}</h4>
+
+                    <form method="POST">
+                        {% csrf_token %}
+
+                        <div class="row g-3">
+                            <div class="col-md-8">
+                                <label class="form-label fw-semibold">Route <span class="text-danger">*</span></label>
+                                {{ form.route }}
+                                {% if form.route.errors %}
+                                    <div class="text-danger small mt-1">{{ form.route.errors.0 }}</div>
+                                {% endif %}
+                            </div>
+
+                            <div class="col-md-4">
+                                <label class="form-label fw-semibold">Stop Order Sequence <span class="text-danger">*</span></label>
+                                {{ form.stop_order }}
+                                {% if form.stop_order.errors %}
+                                    <div class="text-danger small mt-1">{{ form.stop_order.errors.0 }}</div>
+                                {% endif %}
+                            </div>
+
+                            <div class="col-md-6">
+                                <label class="form-label fw-semibold">Stop Name <span class="text-danger">*</span></label>
+                                {{ form.stop_name }}
+                                {% if form.stop_name.errors %}
+                                    <div class="text-danger small mt-1">{{ form.stop_name.errors.0 }}</div>
+                                {% endif %}
+                            </div>
+
+                            <div class="col-md-6">
+                                <label class="form-label fw-semibold">Location / Landmark <span class="text-danger">*</span></label>
+                                {{ form.location }}
+                                {% if form.location.errors %}
+                                    <div class="text-danger small mt-1">{{ form.location.errors.0 }}</div>
+                                {% endif %}
+                            </div>
+
+                            <div class="col-md-6">
+                                <label class="form-label fw-semibold">Morning Pickup Time <span class="text-danger">*</span></label>
+                                {{ form.pickup_time }}
+                                {% if form.pickup_time.errors %}
+                                    <div class="text-danger small mt-1">{{ form.pickup_time.errors.0 }}</div>
+                                {% endif %}
+                            </div>
+
+                            <div class="col-md-6">
+                                <label class="form-label fw-semibold">Evening Drop Time <span class="text-danger">*</span></label>
+                                {{ form.drop_time }}
+                                {% if form.drop_time.errors %}
+                                    <div class="text-danger small mt-1">{{ form.drop_time.errors.0 }}</div>
+                                {% endif %}
+                            </div>
+                        </div>
+
+                        <div class="d-flex justify-content-end gap-2 mt-4 pt-3 border-top">
+                            <a href="{% url 'admin_stop_list' %}" class="btn btn-outline-secondary">Cancel</a>
+                            <button type="submit" class="btn btn-primary px-4">
+                                <i class="bi bi-save me-1"></i> Save Stop Details
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

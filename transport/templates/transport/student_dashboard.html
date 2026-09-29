@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Student Dashboard</title>
+
+    <style>
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background-color: #f4f6f8;
+        }
+
+        .header {
+            background-color: #193f5b;
+            color: white;
+            padding: 35px;
+        }
+
+        .header h1 {
+            margin: 0;
+            font-size: 32px;
+        }
+
+        .header p {
+            margin-top: 15px;
+            font-size: 18px;
+        }
+
+        .container {
+            padding: 40px 34px;
+        }
+
+        .student-box,
+        .pass-box {
+            background-color: white;
+            padding: 25px;
+            margin-bottom: 25px;
+            border-radius: 6px;
+        }
+
+        h2 {
+            color: #193f5b;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            background-color: white;
+        }
+
+        th {
+            background-color: #193f5b;
+            color: white;
+            padding: 15px;
+            text-align: left;
+        }
+
+        td {
+            padding: 14px;
+            border-bottom: 1px solid #ddd;
+        }
+
+        .apply-btn,
+        .logout-btn {
+            display: inline-block;
+            background-color: #193f5b;
+            color: white;
+            padding: 11px 18px;
+            text-decoration: none;
+            border-radius: 6px;
+            margin-top: 15px;
+            margin-right: 8px;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="header">
+        <h1>CampusRide</h1>
+        <p>Student Dashboard</p>
+    </div>
+
+    <div class="container">
+
+        <div class="student-box">
+
+            <h2>Welcome, {{ student.name }}</h2>
+
+            <p><b>Register Number:</b> {{ student.register_number }}</p>
+            <p><b>Department:</b> {{ student.department }}</p>
+            <p><b>Year:</b> {{ student.year }}</p>
+            <p><b>Phone:</b> {{ student.phone }}</p>
+
+            <a href="{% url 'buspass_create' %}" class="apply-btn">
+                Apply for Bus Pass
+            </a>
+
+            <a href="{% url 'student_logout' %}" class="logout-btn">
+                Logout
+            </a>
+
+        </div>
+
+        <div class="pass-box">
+
+            <h2>My Bus Pass</h2>
+
+            <table>
+
+                <tr>
+                    <th>Route</th>
+                    <th>Application Date</th>
+                    <th>Status</th>
+                </tr>
+
+                {% for pass in buspasses %}
+
+                <tr>
+                    <td>
+                        {{ pass.route.route_number }} -
+                        {{ pass.route.route_name }}
+                    </td>
+
+                    <td>{{ pass.application_date }}</td>
+
+                    <td>{{ pass.status }}</td>
+                </tr>
+
+                {% empty %}
+
+                <tr>
+                    <td colspan="3">
+                        No bus pass applications
+                    </td>
+                </tr>
+
+                {% endfor %}
+
+            </table>
+
+        </div>
+
+    </div>
+
+</body>
+</html>

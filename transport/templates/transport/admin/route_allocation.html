@@ -1,0 +1,124 @@
+{% extends 'transport/base.html' %}
+{% load static %}
+
+{% block title %}Route Allocation - CampusRide Admin{% endblock %}
+
+{% block content %}
+<div class="admin-wrapper">
+    {% include 'transport/includes/sidebar.html' %}
+
+    <div class="admin-content">
+        <div class="d-flex flex-wrap justify-content-between align-items-center gap-3 mb-4">
+            <div>
+                <h3 class="fw-bold mb-1 text-primary"><i class="bi bi-diagram-3 me-2"></i>Student Route Allocation</h3>
+                <p class="text-muted small mb-0">Assign students to bus routes and stops with automatic seating capacity enforcement.</p>
+            </div>
+        </div>
+
+        <div class="row g-4 mb-4">
+            <!-- Manual Allocation Form Card -->
+            <div class="col-lg-5">
+                <div class="card-custom p-4">
+                    <h5 class="fw-bold text-primary mb-3"><i class="bi bi-person-plus me-2"></i>Allocate Student to Route</h5>
+
+                    <form method="POST" action="{% url 'admin_route_allocation' %}">
+                        {% csrf_token %}
+
+                        <div class="mb-3">
+                            <label class="form-label fw-semibold">Select Unallocated Student <span class="text-danger">*</span></label>
+                            {{ form.student }}
+                            {% if form.student.errors %}
+                                <div class="text-danger small mt-1">{{ form.student.errors.0 }}</div>
+                            {% endif %}
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label fw-semibold">Select Route <span class="text-danger">*</span></label>
+                            {{ form.route }}
+                            {% if form.route.errors %}
+                                <div class="text-danger small mt-1">{{ form.route.errors.0 }}</div>
+                            {% endif %}
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label fw-semibold">Select Bus <span class="text-danger">*</span></label>
+                            {{ form.bus }}
+                            {% if form.bus.errors %}
+                                <div class="text-danger small mt-1">{{ form.bus.errors.0 }}</div>
+                            {% endif %}
+                        </div>
+
+                        <div class="mb-4">
+                            <label class="form-label fw-semibold">Select Boarding Stop <span class="text-danger">*</span></label>
+                            {{ form.stop }}
+                            {% if form.stop.errors %}
+                                <div class="text-danger small mt-1">{{ form.stop.errors.0 }}</div>
+                            {% endif %}
+                        </div>
+
+                        {% if form.non_field_errors %}
+                            <div class="alert alert-danger mb-3">
+                                <i class="bi bi-exclamation-triangle-fill me-1"></i> {{ form.non_field_errors.0 }}
+                            </div>
+                        {% endif %}
+
+                        <button type="submit" class="btn btn-primary w-100 py-2">
+                            <i class="bi bi-check-circle me-1"></i> Confirm Student Allocation
+                        </button>
+                    </form>
+                </div>
+            </div>
+
+            <!-- Active Allocations Table -->
+            <div class="col-lg-7">
+                <div class="card-custom p-4">
+                    <div class="d-flex flex-wrap justify-content-between align-items-center gap-2 mb-3">
+                        <h5 class="fw-bold text-primary mb-0"><i class="bi bi-list-check me-2"></i>Active Allocations ({{ allocations.count }})</h5>
+
+                        <form method="GET" action="{% url 'admin_route_allocation' %}" class="d-flex gap-2">
+                            <input type="text" name="search" value="{{ search_query }}" class="form-control form-control-sm" placeholder="Search ID, Student...">
+                            <button type="submit" class="btn btn-sm btn-primary"><i class="bi bi-search"></i></button>
+                        </form>
+                    </div>
+
+                    <div class="table-responsive">
+                        <table class="table table-hover align-middle mb-0">
+                            <thead class="table-light">
+                                <tr>
+                                    <th>Student</th>
+                                    <th>Route</th>
+                                    <th>Bus</th>
+                                    <th>Stop</th>
+                                    <th>Action</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for alloc in allocations %}
+                                <tr>
+                                    <td>
+                                        <div><strong>{{ alloc.student.full_name }}</strong></div>
+                                        <span class="small font-monospace text-muted">{{ alloc.student.student_id }}</span>
+                                    </td>
+                                    <td><span class="badge bg-indigo-500 text-dark border bg-light">{{ alloc.route.route_code }}</span></td>
+                                    <td class="fw-bold text-dark">{{ alloc.bus.bus_number }}</td>
+                                    <td class="small">{{ alloc.stop.stop_name }}</td>
+                                    <td>
+                                        <a href="{% url 'admin_allocation_delete' alloc.id %}" class="btn btn-sm btn-outline-danger">
+                                            <i class="bi bi-trash"></i> Remove
+                                        </a>
+                                    </td>
+                                </tr>
+                                {% empty %}
+                                <tr>
+                                    <td colspan="5" class="text-center py-4 text-muted">No active route allocations found.</td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,87 @@
+{% extends 'transport/base.html' %}
+{% load static %}
+
+{% block title %}{{ title }} - CampusRide Admin{% endblock %}
+
+{% block content %}
+<div class="admin-wrapper">
+    {% include 'transport/includes/sidebar.html' %}
+
+    <div class="admin-content">
+        <div class="mb-3">
+            <a href="{% url 'admin_bus_list' %}" class="btn btn-sm btn-outline-secondary"><i class="bi bi-arrow-left"></i> Back to Buses List</a>
+        </div>
+
+        <div class="row justify-content-center">
+            <div class="col-lg-7">
+                <div class="card-custom p-4 p-md-5">
+                    <h4 class="fw-bold text-primary mb-4"><i class="bi bi-bus-front me-2"></i>{{ title }}</h4>
+
+                    <form method="POST">
+                        {% csrf_token %}
+
+                        <div class="row g-3">
+                            <div class="col-md-6">
+                                <label class="form-label fw-semibold">Bus Number <span class="text-danger">*</span></label>
+                                {{ form.bus_number }}
+                                {% if form.bus_number.errors %}
+                                    <div class="text-danger small mt-1">{{ form.bus_number.errors.0 }}</div>
+                                {% endif %}
+                            </div>
+
+                            <div class="col-md-6">
+                                <label class="form-label fw-semibold">Registration Number <span class="text-danger">*</span></label>
+                                {{ form.registration_number }}
+                                {% if form.registration_number.errors %}
+                                    <div class="text-danger small mt-1">{{ form.registration_number.errors.0 }}</div>
+                                {% endif %}
+                            </div>
+
+                            <div class="col-md-6">
+                                <label class="form-label fw-semibold">Driver Name <span class="text-danger">*</span></label>
+                                {{ form.driver_name }}
+                                {% if form.driver_name.errors %}
+                                    <div class="text-danger small mt-1">{{ form.driver_name.errors.0 }}</div>
+                                {% endif %}
+                            </div>
+
+                            <div class="col-md-6">
+                                <label class="form-label fw-semibold">Driver Phone <span class="text-danger">*</span></label>
+                                {{ form.driver_phone }}
+                                {% if form.driver_phone.errors %}
+                                    <div class="text-danger small mt-1">{{ form.driver_phone.errors.0 }}</div>
+                                {% endif %}
+                            </div>
+
+                            <div class="col-md-4">
+                                <label class="form-label fw-semibold">Capacity (Seats) <span class="text-danger">*</span></label>
+                                {{ form.capacity }}
+                                {% if form.capacity.errors %}
+                                    <div class="text-danger small mt-1">{{ form.capacity.errors.0 }}</div>
+                                {% endif %}
+                            </div>
+
+                            <div class="col-md-4">
+                                <label class="form-label fw-semibold">Bus Type</label>
+                                {{ form.bus_type }}
+                            </div>
+
+                            <div class="col-md-4">
+                                <label class="form-label fw-semibold">Status</label>
+                                {{ form.status }}
+                            </div>
+                        </div>
+
+                        <div class="d-flex justify-content-end gap-2 mt-4 pt-3 border-top">
+                            <a href="{% url 'admin_bus_list' %}" class="btn btn-outline-secondary">Cancel</a>
+                            <button type="submit" class="btn btn-primary px-4">
+                                <i class="bi bi-save me-1"></i> Save Bus Details
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

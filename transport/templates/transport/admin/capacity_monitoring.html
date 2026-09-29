@@ -1,0 +1,92 @@
+{% extends 'transport/base.html' %}
+{% load static %}
+
+{% block title %}Capacity Monitoring - CampusRide Admin{% endblock %}
+
+{% block content %}
+<div class="admin-wrapper">
+    {% include 'transport/includes/sidebar.html' %}
+
+    <div class="admin-content">
+        <div class="d-flex flex-wrap justify-content-between align-items-center gap-3 mb-4">
+            <div>
+                <h3 class="fw-bold mb-1 text-primary"><i class="bi bi-pie-chart me-2"></i>Bus Seating Capacity Monitoring</h3>
+                <p class="text-muted small mb-0">Track real-time bus seating occupancy, allocated students, and available seats across the fleet.</p>
+            </div>
+            <div class="bg-white p-2.5 rounded-3 border d-flex gap-3">
+                <div class="small"><span class="text-muted">Total Seats:</span> <strong>{{ total_capacity }}</strong></div>
+                <div class="small"><span class="text-muted">Total Allocated:</span> <strong class="text-primary">{{ total_allocated }}</strong></div>
+            </div>
+        </div>
+
+        <div class="row g-4">
+            {% for bdata in bus_data %}
+            <div class="col-md-6 col-lg-4">
+                <div class="card-custom p-4 h-100 d-flex flex-column justify-content-between">
+                    <div>
+                        <div class="d-flex justify-content-between align-items-center mb-3">
+                            <span class="fs-5 fw-bold text-dark"><i class="bi bi-bus-front me-2 text-primary"></i>{{ bdata.bus.bus_number }}</span>
+                            <span class="badge {{ bdata.badge_class }} px-2.5 py-1.5 fs-7">
+                                {% if bdata.percentage >= 100 %}FULL CAPACITY
+                                {% elif bdata.percentage >= 80 %}HIGH OCCUPANCY
+                                {% elif bdata.percentage >= 40 %}MEDIUM OCCUPANCY
+                                {% else %}LOW OCCUPANCY{% endif %}
+                            </span>
+                        </div>
+
+                        <div class="text-muted small mb-2">Registration: <strong>{{ bdata.bus.registration_number }}</strong> ({{ bdata.bus.bus_type }})</div>
+
+                        <div class="bg-light p-3 rounded-3 mb-3 border">
+                            <div class="row text-center g-2 small">
+                                <div class="col-4 border-end">
+                                    <div class="text-muted">Capacity</div>
+                                    <div class="fw-bold text-dark fs-6">{{ bdata.bus.capacity }}</div>
+                                </div>
+                                <div class="col-4 border-end">
+                                    <div class="text-muted">Allocated</div>
+                                    <div class="fw-bold text-primary fs-6">{{ bdata.allocated }}</div>
+                                </div>
+                                <div class="col-4">
+                                    <div class="text-muted">Available</div>
+                                    <div class="fw-bold text-success fs-6">{{ bdata.available }}</div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="mb-3">
+                            <div class="d-flex justify-content-between small text-muted mb-1">
+                                <span>Occupancy Rate</span>
+                                <strong class="text-dark">{{ bdata.percentage }}%</strong>
+                            </div>
+                            <div class="progress progress-capacity">
+                                <div class="progress-bar occ-bar {{ bdata.badge_class }}" 
+                                     role="progressbar" 
+                                     style="--occ: {{ bdata.percentage }}%;" 
+                                     aria-valuenow="{{ bdata.percentage }}" 
+                                     aria-valuemin="0" 
+                                     aria-valuemax="100">
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+
+                    <div class="pt-3 border-top small text-muted">
+                        <i class="bi bi-signpost-split me-1"></i> Assigned Route: 
+                        {% if bdata.routes %}
+                            {% for r in bdata.routes %}<strong>{{ r.route_code }}</strong> {% endfor %}
+                        {% else %}
+                            <span class="text-warning">Unassigned</span>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+            {% empty %}
+            <div class="col-12 text-center py-5">
+                <p class="text-muted">No buses registered in the system.</p>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,72 @@
+<div class="admin-sidebar d-none d-lg-block">
+    <div class="p-3 border-bottom border-dark">
+        <div class="d-flex align-items-center gap-2 text-white">
+            <i class="bi bi-shield-lock-fill text-indigo-400 fs-4"></i>
+            <div>
+                <div class="fw-bold fs-6">Admin Control Panel</div>
+                <div class="small text-muted">College Transport</div>
+            </div>
+        </div>
+    </div>
+
+    <div class="sidebar-heading">Core Navigation</div>
+    <ul class="sidebar-menu">
+        <li class="sidebar-menu-item">
+            <a href="{% url 'admin_dashboard' %}" class="sidebar-menu-link {% if request.resolver_match.url_name == 'admin_dashboard' %}active{% endif %}">
+                <i class="bi bi-speedometer2"></i> Dashboard
+            </a>
+        </li>
+        <li class="sidebar-menu-item">
+            <a href="{% url 'admin_student_list' %}" class="sidebar-menu-link {% if 'student' in request.resolver_match.url_name %}active{% endif %}">
+                <i class="bi bi-people"></i> Manage Students
+            </a>
+        </li>
+    </ul>
+
+    <div class="sidebar-heading">Transport Fleet</div>
+    <ul class="sidebar-menu">
+        <li class="sidebar-menu-item">
+            <a href="{% url 'admin_bus_list' %}" class="sidebar-menu-link {% if 'bus' in request.resolver_match.url_name and 'pass' not in request.resolver_match.url_name %}active{% endif %}">
+                <i class="bi bi-bus-front"></i> Buses & Fleet
+            </a>
+        </li>
+        <li class="sidebar-menu-item">
+            <a href="{% url 'admin_route_list' %}" class="sidebar-menu-link {% if 'route' in request.resolver_match.url_name and 'alloc' not in request.resolver_match.url_name %}active{% endif %}">
+                <i class="bi bi-signpost-split"></i> Routes
+            </a>
+        </li>
+        <li class="sidebar-menu-item">
+            <a href="{% url 'admin_stop_list' %}" class="sidebar-menu-link {% if 'stop' in request.resolver_match.url_name %}active{% endif %}">
+                <i class="bi bi-geo-alt"></i> Bus Stops
+            </a>
+        </li>
+    </ul>
+
+    <div class="sidebar-heading">Allocations & Passes</div>
+    <ul class="sidebar-menu">
+        <li class="sidebar-menu-item">
+            <a href="{% url 'admin_pass_applications' %}" class="sidebar-menu-link {% if 'pass' in request.resolver_match.url_name %}active{% endif %}">
+                <i class="bi bi-card-checklist"></i> Pass Applications
+            </a>
+        </li>
+        <li class="sidebar-menu-item">
+            <a href="{% url 'admin_route_allocation' %}" class="sidebar-menu-link {% if 'alloc' in request.resolver_match.url_name %}active{% endif %}">
+                <i class="bi bi-diagram-3"></i> Route Allocations
+            </a>
+        </li>
+        <li class="sidebar-menu-item">
+            <a href="{% url 'admin_capacity_monitoring' %}" class="sidebar-menu-link {% if 'capacity' in request.resolver_match.url_name %}active{% endif %}">
+                <i class="bi bi-pie-chart"></i> Capacity Monitor
+            </a>
+        </li>
+    </ul>
+
+    <div class="sidebar-heading">Analytics</div>
+    <ul class="sidebar-menu">
+        <li class="sidebar-menu-item">
+            <a href="{% url 'admin_reports' %}" class="sidebar-menu-link {% if 'report' in request.resolver_match.url_name %}active{% endif %}">
+                <i class="bi bi-file-earmark-bar-graph"></i> Reports & Summary
+            </a>
+        </li>
+    </ul>
+</div>

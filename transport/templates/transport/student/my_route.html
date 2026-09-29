@@ -1,0 +1,77 @@
+{% extends 'transport/base.html' %}
+{% load static %}
+
+{% block title %}My Allocated Route - CampusRide{% endblock %}
+
+{% block content %}
+<div class="container py-4">
+    <div class="mb-4">
+        <h2 class="mb-1 text-primary"><i class="bi bi-pin-map me-2"></i>My Allocated Route & Bus</h2>
+        <p class="text-muted small mb-0">View your officially allocated transportation route, assigned bus, and boarding stop details.</p>
+    </div>
+
+    {% if allocation %}
+    <div class="row g-4">
+        <div class="col-lg-5">
+            <div class="card-custom p-4 mb-4">
+                <span class="badge bg-success mb-2"><i class="bi bi-check-circle me-1"></i> Active Allocation</span>
+                <h3 class="fw-bold text-primary mb-2">{{ allocation.route.route_name }}</h3>
+                <p class="text-muted small mb-3">Route Code: <strong>{{ allocation.route.route_code }}</strong></p>
+
+                <div class="bg-light p-3 rounded-3 mb-4 border">
+                    <h6 class="fw-bold text-dark mb-2"><i class="bi bi-geo-alt-fill text-danger me-1"></i> My Boarding Stop</h6>
+                    <div class="fs-5 fw-bold text-primary">{{ allocation.stop.stop_name }}</div>
+                    <div class="small text-muted">{{ allocation.stop.location }}</div>
+                    <div class="d-flex gap-3 mt-2 pt-2 border-top">
+                        <div class="small"><span class="text-muted">Morning Pickup:</span> <strong class="text-success">{{ allocation.stop.pickup_time|time:"h:i A" }}</strong></div>
+                        <div class="small"><span class="text-muted">Evening Drop:</span> <strong class="text-danger">{{ allocation.stop.drop_time|time:"h:i A" }}</strong></div>
+                    </div>
+                </div>
+
+                <h6 class="fw-bold text-uppercase fs-7 text-muted mb-3"><i class="bi bi-bus-front me-1"></i> Bus & Driver Details</h6>
+                <div class="bg-light p-3 rounded-3 border">
+                    <div class="fw-bold text-dark fs-5 mb-1">{{ allocation.bus.bus_number }}</div>
+                    <div class="small text-muted mb-1">Registration: <strong>{{ allocation.bus.registration_number }}</strong></div>
+                    <div class="small text-muted mb-1">Bus Type: <strong>{{ allocation.bus.bus_type }}</strong></div>
+                    <div class="small text-muted mb-1">Driver: <strong>{{ allocation.bus.driver_name }}</strong></div>
+                    <div class="small text-muted">Driver Contact: <strong class="text-primary"><i class="bi bi-telephone-fill me-1"></i> {{ allocation.bus.driver_phone }}</strong></div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-lg-7">
+            <div class="card-custom p-4">
+                <h5 class="fw-bold text-primary mb-3"><i class="bi bi-signpost-2 me-2"></i>Full Route Stops Timeline</h5>
+                <div class="stop-timeline">
+                    {% for stop in stops %}
+                    <div class="stop-timeline-item {% if stop.id == allocation.stop.id %}bg-primary-subtle p-3 rounded border border-primary ms-n3 ps-4{% endif %}">
+                        <div class="d-flex justify-content-between align-items-start">
+                            <div>
+                                <span class="badge {% if stop.id == allocation.stop.id %}bg-primary{% else %}bg-secondary{% endif %} mb-1">Stop #{{ stop.stop_order }}</span>
+                                <h6 class="fw-bold text-dark mb-1">
+                                    {{ stop.stop_name }}
+                                    {% if stop.id == allocation.stop.id %}<span class="badge bg-success ms-2"><i class="bi bi-star-fill me-1"></i> My Boarding Stop</span>{% endif %}
+                                </h6>
+                                <div class="small text-muted"><i class="bi bi-geo-alt me-1"></i> {{ stop.location }}</div>
+                            </div>
+                            <div class="text-end small">
+                                <div class="fw-bold text-success"><i class="bi bi-arrow-up-right me-1"></i> {{ stop.pickup_time|time:"h:i A" }}</div>
+                                <div class="text-muted"><i class="bi bi-arrow-down-left me-1"></i> {{ stop.drop_time|time:"h:i A" }}</div>
+                            </div>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+    </div>
+    {% else %}
+    <div class="alert alert-warning py-4 text-center my-4">
+        <i class="bi bi-exclamation-triangle-fill fs-3 d-block mb-2 text-warning"></i>
+        <h5>No Active Route Allocation Found</h5>
+        <p class="text-muted">You have not been allocated to a bus route yet. Please submit your bus pass application or contact the transport administrator.</p>
+        <a href="{% url 'apply_bus_pass' %}" class="btn btn-primary mt-2"><i class="bi bi-plus-circle me-1"></i> Apply for Bus Pass</a>
+    </div>
+    {% endif %}
+</div>
+{% endblock %}

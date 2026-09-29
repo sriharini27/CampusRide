@@ -1,0 +1,197 @@
+{% extends 'transport/base.html' %}
+{% load static %}
+
+{% block title %}CampusRide - Smart College Transportation Management{% endblock %}
+
+{% block content %}
+<!-- Hero Section -->
+<section class="hero-section">
+    <div class="container text-center text-lg-start">
+        <div class="row align-items-center gy-5">
+            <div class="col-lg-7">
+                <span class="badge bg-indigo-500 text-white rounded-pill px-3 py-2 mb-3 bg-primary">
+                    <i class="bi bi-shield-check me-1"></i> Official College Transport Portal
+                </span>
+                <h1 class="hero-title mb-3">CampusRide</h1>
+                <p class="hero-subtitle mb-4">Making College Transportation Simple, Smart and Connected.</p>
+                
+                <div class="d-flex flex-wrap gap-3 justify-content-center justify-content-lg-start">
+                    <a href="{% url 'user_login' %}" class="btn btn-primary btn-lg shadow-sm">
+                        <i class="bi bi-person-circle me-1"></i> Student Login
+                    </a>
+                    <a href="{% url 'student_register' %}" class="btn btn-light btn-lg text-dark fw-bold">
+                        <i class="bi bi-person-plus-fill me-1"></i> Student Registration
+                    </a>
+                    <a href="{% url 'user_login' %}" class="btn btn-outline-light btn-lg">
+                        <i class="bi bi-shield-lock me-1"></i> Admin Login
+                    </a>
+                    <a href="{% url 'student_routes_list' %}" class="btn btn-outline-info btn-lg text-white">
+                        <i class="bi bi-map me-1"></i> Explore Routes
+                    </a>
+                </div>
+            </div>
+
+            <div class="col-lg-5 text-center">
+                <div class="p-4 rounded-4 bg-white bg-opacity-10 backdrop-blur border border-white border-opacity-20 shadow-lg text-start">
+                    <h5 class="text-white mb-3"><i class="bi bi-speedometer2 text-info me-2"></i>Live System Snapshot</h5>
+                    <div class="row g-3">
+                        <div class="col-6">
+                            <div class="p-3 rounded-3 bg-white bg-opacity-10 text-white">
+                                <div class="fs-3 fw-bold text-info">{{ total_routes }}</div>
+                                <div class="small text-white-50">Active Routes</div>
+                            </div>
+                        </div>
+                        <div class="col-6">
+                            <div class="p-3 rounded-3 bg-white bg-opacity-10 text-white">
+                                <div class="fs-3 fw-bold text-warning">{{ total_buses }}</div>
+                                <div class="small text-white-50">Modern Buses</div>
+                            </div>
+                        </div>
+                        <div class="col-6">
+                            <div class="p-3 rounded-3 bg-white bg-opacity-10 text-white">
+                                <div class="fs-3 fw-bold text-success">{{ total_stops }}</div>
+                                <div class="small text-white-50">Boarding Stops</div>
+                            </div>
+                        </div>
+                        <div class="col-6">
+                            <div class="p-3 rounded-3 bg-white bg-opacity-10 text-white">
+                                <div class="fs-3 fw-bold text-light">{{ total_students }}</div>
+                                <div class="small text-white-50">Registered Students</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- About Section -->
+<section class="py-5 bg-white">
+    <div class="container py-4">
+        <div class="text-center max-w-700 mx-auto mb-5">
+            <span class="text-primary fw-bold text-uppercase fs-7">About CampusRide</span>
+            <h2 class="mt-1">Streamlining College Transit Operations</h2>
+            <p class="text-muted">CampusRide is a centralized digital transportation platform designed for colleges to manage buses, routes, student registrations, bus pass approvals, and real-time seat capacity.</p>
+        </div>
+
+        <div class="row g-4">
+            <div class="col-md-4">
+                <div class="card-custom p-4 h-100 text-center">
+                    <div class="stat-icon primary mx-auto mb-3"><i class="bi bi-clock-history"></i></div>
+                    <h5>Zero Paperwork</h5>
+                    <p class="text-muted small mb-0">Instant online bus pass applications and auto-generated digital passes complete with QR details.</p>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="card-custom p-4 h-100 text-center">
+                    <div class="stat-icon success mx-auto mb-3"><i class="bi bi-shield-check"></i></div>
+                    <h5>Capacity Management</h5>
+                    <p class="text-muted small mb-0">Automatic seat allocation prevents bus overcrowding and ensures every student gets a seat.</p>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="card-custom p-4 h-100 text-center">
+                    <div class="stat-icon info mx-auto mb-3"><i class="bi bi-pin-map-fill"></i></div>
+                    <h5>Route Clarity</h5>
+                    <p class="text-muted small mb-0">Detailed stop schedules, pickup/drop timings, and driver emergency contacts available 24/7.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- How It Works Section -->
+<section class="py-5 bg-light border-top border-bottom">
+    <div class="container py-4">
+        <div class="text-center mb-5">
+            <span class="text-primary fw-bold text-uppercase fs-7">Simple Workflow</span>
+            <h2 class="mt-1">How CampusRide Works</h2>
+        </div>
+
+        <div class="row g-4 text-center">
+            <div class="col-md-3">
+                <div class="p-3">
+                    <div class="badge bg-primary rounded-circle p-3 fs-4 mb-3">1</div>
+                    <h6 class="fw-bold">Register Account</h6>
+                    <p class="text-muted small">Create your student account using your official Student ID and details.</p>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="p-3">
+                    <div class="badge bg-primary rounded-circle p-3 fs-4 mb-3">2</div>
+                    <h6 class="fw-bold">Select Route & Stop</h6>
+                    <p class="text-muted small">Explore available college routes and choose your preferred boarding stop.</p>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="p-3">
+                    <div class="badge bg-primary rounded-circle p-3 fs-4 mb-3">3</div>
+                    <h6 class="fw-bold">Apply Bus Pass</h6>
+                    <p class="text-muted small">Submit your bus pass application online with valid semester dates.</p>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="p-3">
+                    <div class="badge bg-success rounded-circle p-3 fs-4 mb-3">4</div>
+                    <h6 class="fw-bold">Get Digital Pass</h6>
+                    <p class="text-muted small">Once approved by transport admin, print your official bus pass instantly.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Available Routes Section -->
+<section class="py-5 bg-white">
+    <div class="container py-4">
+        <div class="d-flex flex-wrap justify-content-between align-items-end mb-4">
+            <div>
+                <span class="text-primary fw-bold text-uppercase fs-7">Network Overview</span>
+                <h2 class="mt-1 mb-0">Popular College Routes</h2>
+            </div>
+            <a href="{% url 'student_routes_list' %}" class="btn btn-outline-primary">View All Routes <i class="bi bi-arrow-right"></i></a>
+        </div>
+
+        <div class="row g-4">
+            {% for route in routes %}
+            <div class="col-md-6 col-lg-4">
+                <div class="card-custom h-100 p-4 d-flex flex-column justify-content-between">
+                    <div>
+                        <div class="d-flex justify-content-between align-items-center mb-2">
+                            <span class="badge bg-dark fs-7">{{ route.route_code }}</span>
+                            {% if route.bus %}
+                                <span class="badge {% if route.bus.is_full %}badge-rejected{% else %}badge-approved{% endif %}">
+                                    <i class="bi bi-bus-front me-1"></i> {{ route.bus.bus_number }}
+                                </span>
+                            {% endif %}
+                        </div>
+                        <h5 class="card-title text-primary mb-2">{{ route.route_name }}</h5>
+                        <p class="text-muted small mb-3">
+                            <i class="bi bi-geo-alt-fill text-danger me-1"></i> {{ route.start_point }} ➔ {{ route.end_point }}
+                        </p>
+                        
+                        <div class="row g-2 mb-3 bg-light p-2 rounded text-center small">
+                            <div class="col-6">
+                                <span class="text-muted">Distance:</span> <strong>{{ route.distance }} km</strong>
+                            </div>
+                            <div class="col-6">
+                                <span class="text-muted">Est. Time:</span> <strong>{{ route.estimated_time }}</strong>
+                            </div>
+                        </div>
+                    </div>
+
+                    <a href="{% url 'student_route_detail' route.id %}" class="btn btn-sm btn-outline-dark w-100 mt-2">
+                        View Route Stops <i class="bi bi-chevron-right"></i>
+                    </a>
+                </div>
+            </div>
+            {% empty %}
+            <div class="col-12 text-center py-4">
+                <p class="text-muted">No active routes registered yet.</p>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+{% endblock %}

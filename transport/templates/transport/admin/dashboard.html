@@ -1,0 +1,218 @@
+{% extends 'transport/base.html' %}
+{% load static %}
+
+{% block title %}Admin Dashboard - CampusRide{% endblock %}
+
+{% block content %}
+<div class="admin-wrapper">
+    {% include 'transport/includes/sidebar.html' %}
+
+    <div class="admin-content">
+        <!-- Page Header -->
+        <div class="d-flex flex-wrap justify-content-between align-items-center gap-3 mb-4">
+            <div>
+                <h3 class="fw-bold mb-1 text-primary"><i class="bi bi-speedometer2 me-2"></i>CampusRide Admin Dashboard</h3>
+                <p class="text-muted small mb-0">Real-time college transportation analytics, bus capacity, and application metrics.</p>
+            </div>
+
+            <div class="d-flex gap-2">
+                <a href="{% url 'admin_pass_applications' %}" class="btn btn-warning text-dark fw-bold">
+                    <i class="bi bi-exclamation-circle me-1"></i> Review Applications ({{ pending_passes }})
+                </a>
+                <a href="{% url 'admin_route_allocation' %}" class="btn btn-primary">
+                    <i class="bi bi-person-plus me-1"></i> Allocate Student
+                </a>
+            </div>
+        </div>
+
+        <!-- 8 KPI Statistic Cards -->
+        <div class="row g-3 mb-4">
+            <div class="col-sm-6 col-md-3">
+                <div class="stat-card">
+                    <div>
+                        <div class="stat-label">Total Students</div>
+                        <div class="stat-value text-primary">{{ total_students }}</div>
+                    </div>
+                    <div class="stat-icon primary"><i class="bi bi-people-fill"></i></div>
+                </div>
+            </div>
+
+            <div class="col-sm-6 col-md-3">
+                <div class="stat-card">
+                    <div>
+                        <div class="stat-label">Total Buses</div>
+                        <div class="stat-value text-dark">{{ total_buses }}</div>
+                    </div>
+                    <div class="stat-icon info"><i class="bi bi-bus-front-fill"></i></div>
+                </div>
+            </div>
+
+            <div class="col-sm-6 col-md-3">
+                <div class="stat-card">
+                    <div>
+                        <div class="stat-label">Total Routes</div>
+                        <div class="stat-value text-indigo">{{ total_routes }}</div>
+                    </div>
+                    <div class="stat-icon primary"><i class="bi bi-signpost-split-fill"></i></div>
+                </div>
+            </div>
+
+            <div class="col-sm-6 col-md-3">
+                <div class="stat-card">
+                    <div>
+                        <div class="stat-label">Total Stops</div>
+                        <div class="stat-value text-secondary">{{ total_stops }}</div>
+                    </div>
+                    <div class="stat-icon info"><i class="bi bi-geo-alt-fill"></i></div>
+                </div>
+            </div>
+
+            <div class="col-sm-6 col-md-3">
+                <div class="stat-card">
+                    <div>
+                        <div class="stat-label">Pending Passes</div>
+                        <div class="stat-value text-warning">{{ pending_passes }}</div>
+                    </div>
+                    <div class="stat-icon warning"><i class="bi bi-hourglass-split"></i></div>
+                </div>
+            </div>
+
+            <div class="col-sm-6 col-md-3">
+                <div class="stat-card">
+                    <div>
+                        <div class="stat-label">Approved Passes</div>
+                        <div class="stat-value text-success">{{ approved_passes }}</div>
+                    </div>
+                    <div class="stat-icon success"><i class="bi bi-check-circle-fill"></i></div>
+                </div>
+            </div>
+
+            <div class="col-sm-6 col-md-3">
+                <div class="stat-card">
+                    <div>
+                        <div class="stat-label">Active Allocations</div>
+                        <div class="stat-value text-primary">{{ active_allocations }}</div>
+                    </div>
+                    <div class="stat-icon primary"><i class="bi bi-diagram-3-fill"></i></div>
+                </div>
+            </div>
+
+            <div class="col-sm-6 col-md-3">
+                <div class="stat-card">
+                    <div>
+                        <div class="stat-label">Available Seats</div>
+                        <div class="stat-value text-success">{{ available_seats }}</div>
+                    </div>
+                    <div class="stat-icon success"><i class="bi bi-pie-chart-fill"></i></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Charts Grid (4 Charts) -->
+        <div class="row g-4 mb-4">
+            <div class="col-lg-6">
+                <div class="card-custom p-4 h-100">
+                    <h5 class="fw-bold text-primary mb-3"><i class="bi bi-bar-chart-fill me-2"></i>Students Allocated by Route</h5>
+                    <div style="height: 260px;">
+                        <canvas id="chartStudentsByRoute"></canvas>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-lg-6">
+                <div class="card-custom p-4 h-100">
+                    <h5 class="fw-bold text-primary mb-3"><i class="bi bi-bus-front me-2"></i>Bus Capacity Utilization</h5>
+                    <div style="height: 260px;">
+                        <canvas id="chartBusCapacity"></canvas>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-lg-6">
+                <div class="card-custom p-4 h-100">
+                    <h5 class="fw-bold text-primary mb-3"><i class="bi bi-pie-chart me-2"></i>Bus Pass Application Status</h5>
+                    <div style="height: 240px;">
+                        <canvas id="chartPassStatus"></canvas>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-lg-6">
+                <div class="card-custom p-4 h-100">
+                    <h5 class="fw-bold text-primary mb-3"><i class="bi bi-diagram-2 me-2"></i>Department-wise Students</h5>
+                    <div style="height: 240px;">
+                        <canvas id="chartDepartment"></canvas>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Recent Applications Table -->
+        <div class="card-custom p-4">
+            <div class="d-flex justify-content-between align-items-center mb-3">
+                <h5 class="fw-bold text-primary mb-0"><i class="bi bi-clock-history me-2"></i>Recent Bus Pass Applications</h5>
+                <a href="{% url 'admin_pass_applications' %}" class="small text-decoration-none">View All Applications <i class="bi bi-arrow-right"></i></a>
+            </div>
+
+            <div class="table-responsive">
+                <table class="table table-hover align-middle mb-0">
+                    <thead class="table-light">
+                        <tr>
+                            <th>Pass Number</th>
+                            <th>Student ID & Name</th>
+                            <th>Route</th>
+                            <th>Applied Date</th>
+                            <th>Status</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for pass in recent_passes %}
+                        <tr>
+                            <td class="fw-bold font-monospace">{{ pass.pass_number }}</td>
+                            <td>
+                                <div><strong>{{ pass.student.full_name }}</strong></div>
+                                <span class="small text-muted">{{ pass.student.student_id }} ({{ pass.student.department }})</span>
+                            </td>
+                            <td>{{ pass.route.route_code }}</td>
+                            <td>{{ pass.application_date }}</td>
+                            <td>
+                                {% if pass.status == 'Approved' %}<span class="badge badge-approved">Approved</span>
+                                {% elif pass.status == 'Pending' %}<span class="badge badge-pending">Pending</span>
+                                {% elif pass.status == 'Rejected' %}<span class="badge badge-rejected">Rejected</span>
+                                {% else %}<span class="badge badge-expired">Expired</span>{% endif %}
+                            </td>
+                            <td>
+                                <a href="{% url 'admin_pass_action' pass.id %}" class="btn btn-sm btn-outline-primary"><i class="bi bi-pencil-square"></i> Review</a>
+                            </td>
+                        </tr>
+                        {% empty %}
+                        <tr>
+                            <td colspan="6" class="text-center py-3 text-muted">No pass applications found.</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        initAdminCharts({
+            routeLabels: '{{ chart_route_labels|escapejs }}',
+            routeData: '{{ chart_route_data|escapejs }}',
+            busLabels: '{{ chart_bus_labels|escapejs }}',
+            busCapacity: '{{ chart_bus_capacity|escapejs }}',
+            busAllocated: '{{ chart_bus_allocated|escapejs }}',
+            passLabels: '{{ chart_pass_labels|escapejs }}',
+            passData: '{{ chart_pass_data|escapejs }}',
+            deptLabels: '{{ chart_dept_labels|escapejs }}',
+            deptData: '{{ chart_dept_data|escapejs }}'
+        });
+    });
+</script>
+{% endblock %}
